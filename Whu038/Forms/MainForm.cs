@@ -27,7 +27,9 @@ using Whu038.Forms;
 namespace Whu038
 {
     public partial class MyEngine : Form
-    {
+    {/// <summary>
+    /// 
+    /// </summary>
         private MapView m_MapView ;
         public MyEngine()
         {
