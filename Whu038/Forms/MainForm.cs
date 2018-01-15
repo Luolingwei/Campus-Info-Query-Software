@@ -55,6 +55,63 @@ namespace Whu038
             public double y;
         }
 
+        //获取RGB颜色 默认为我自己的地图底色
+        public IColor getRGB(int r = 245, int g = 235, int b = 186)
+        {
+            IRgbColor pColor = new RgbColorClass();
+
+            pColor.Red = r;
+            pColor.Green = g;
+            pColor.Blue = b;
+            return pColor as IColor;
+        }
+
+        //获得图层by名称
+        public IGeoFeatureLayer getGeoLayer(string layerName)
+        {
+            if (null == axMapControl1)
+                return null;
+            ILayer layer;
+            IGeoFeatureLayer geoFeatureLayer;
+            for (int i = 0; i < axMapControl1.LayerCount; i++)
+            {
+                layer = axMapControl1.get_Layer(i);
+                if (layer != null && layer.Name== layerName)
+                {
+                    geoFeatureLayer = layer as IGeoFeatureLayer;
+                    return geoFeatureLayer;
+                }
+            }
+            return null;
+        }
+
+        /* 随机生成填充颜色组
+       * @count 待生成颜色数量
+       */
+        static public IColorRamp CreateRandomColorRamp(int count)
+        {
+            
+            IEnumColors pEnumRamp;
+            IRandomColorRamp pColorRamp;
+           
+            pColorRamp = new RandomColorRampClass();
+            pColorRamp.StartHue = 0;
+            pColorRamp.MinValue = 99;
+            pColorRamp.MinSaturation = 15;
+            pColorRamp.EndHue = 360;
+            pColorRamp.MaxValue = 100;
+            pColorRamp.MaxSaturation = 30;
+            pColorRamp.Size = count * 2;
+
+            bool ok = true;
+            pColorRamp.CreateRamp(out ok);
+            pEnumRamp = pColorRamp.Colors;
+            return pColorRamp;
+        }
+
+
+
+
         private ILayer pGlobalFeatureLayer = null;    //获取当前图层
         private IPoint m_PointPt = null;
         private IPoint m_MovePt = null;
@@ -266,240 +323,6 @@ namespace Whu038
                     axMapControl1.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
                 }
             }
-
-            #region 雷达图
-            if (caozuo == 999)
-            {
-                //MessageBox.Show("未能找到有效路径" + caozuo, "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
-                caozuo = 0;
-                //新范围
-                IGraphicsContainer pGraphicsContainer = axMapControl1.Map as IGraphicsContainer;
-                IActiveView pActiveView = pGraphicsContainer as IActiveView;
-                pGraphicsContainer.DeleteAllElements();
-
-
-                m_PointPt = pActiveView.ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
-                #region 定义填充颜色与类型
-                IRgbColor pColor = new RgbColorClass();//颜色
-                pColor.RGB = System.Drawing.Color.FromArgb(130, 130, 130).ToArgb();//(B,G,R)
-                ILineSymbol pLineSymbol = new SimpleLineSymbolClass();//产生一个线符号对象
-                pLineSymbol.Width = 0.2;
-                pLineSymbol.Color = pColor;
-                IFillSymbol pFillSymbol = new SimpleFillSymbolClass();//设置填充符号的属性
-                pColor.Transparency = 0;
-                pFillSymbol.Color = pColor;
-                pFillSymbol.Outline = pLineSymbol;
-                #endregion
-
-                IPoint pPoint = new PointClass();
-                pPoint.PutCoords(m_PointPt.X, m_PointPt.Y);
-
-
-                //画圈
-                int r = 500;
-                for (int i = 0; i < 3; i++)
-                {
-                    IConstructCircularArc pConstructCircularArc = new CircularArcClass();
-                    pConstructCircularArc.ConstructCircle(pPoint, r + i * r, false);
-                    ICircularArc pArc = pConstructCircularArc as ICircularArc;
-                    ISegment pSegment1 = pArc as ISegment; //通过ISegmentCollection构建Ring对象
-                    ISegmentCollection pSegCollection = new RingClass();
-                    object o = Type.Missing; //添加Segement对象即圆
-                    pSegCollection.AddSegment(pSegment1, ref o, ref o); //QI到IRing接口封闭Ring对象，使其有效
-                    IRing pRing = pSegCollection as IRing;
-                    pRing.Close(); //通过Ring对象使用IGeometryCollection构建Polygon对象
-
-
-                    IGeometryCollection pGeometryColl = new PolygonClass();
-                    pGeometryColl.AddGeometry(pRing, ref o, ref o); //构建一个CircleElement对象
-                    IElement pElement = new CircleElementClass();
-                    pElement.Geometry = pGeometryColl as IGeometry;
-
-
-                    //填充圆的颜色
-                    IFillShapeElement pFillShapeElement = pElement as IFillShapeElement;
-                    pFillShapeElement.Symbol = pFillSymbol;
-                    IGraphicsContainer pGC = this.axMapControl1.ActiveView.GraphicsContainer;
-                    pGC.AddElement(pElement, 0);
-                }
-
-                //画柱
-                for (int i = 0; i < 18; i++)
-                {
-
-                    IPoint pPoint2;
-                    pPoint2 = new PointClass();
-                    double x;
-                    double y;
-                    x = pPoint.X + 3 * r * Math.Cos(2 * i * Math.PI / 18);
-                    y = pPoint.Y + 3 * r * Math.Sin(2 * i * Math.PI / 18);
-                    pPoint2.PutCoords(x, y);
-                    ILine pLine;
-                    pLine = new LineClass();
-                    pLine.PutCoords(pPoint, pPoint2);
-                    IGeometryCollection pPolyline;
-                    pPolyline = new PolylineClass();
-                    ISegmentCollection pPath;
-                    pPath = new PathClass();
-                    object Missing1 = Type.Missing;
-                    object Missing2 = Type.Missing;
-                    pPath.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
-                    pPolyline.AddGeometry(pPath as IGeometry, ref Missing1, ref Missing2);
-
-                    IRgbColor rGBColor = new RgbColorClass();
-                    rGBColor.Red = 130;
-                    rGBColor.Green = 130;
-                    rGBColor.Blue = 130;
-
-                    IElement element = DrawLineSymbol(pPolyline as IGeometry, rGBColor);
-
-                    pGraphicsContainer.AddElement(element, 0);
-                }
-
-
-
-
-                /*
-                Graphics g = this.CreateGraphics();
-                Pen Mypen = new Pen(Color.Blue, 10);
-
-                System.Drawing.Point p1 = new System.Drawing.Point(38627775, 3354858);
-                System.Drawing.Point p2 = new System.Drawing.Point(38627175, 3354258);
-                System.Drawing.Point p3 = new System.Drawing.Point(38617175, 3352858);
-                System.Drawing.Point p4 = new System.Drawing.Point(38617175, 3353858);
-                System.Drawing.Point[] p = { p1, p2, p3, p4 };
-                g.DrawPolygon(Mypen, p);
-            
-
-                */
-                //读txt
-                string dir = "D:\\";
-                string file = "zcpj.txt";
-                StreamReader sr = new StreamReader(dir + file);
-                /* while (sr.Peek() > -1)
-                 {
-                     MessageBox.Show(sr.ReadToEnd());
-                 }
-                 */
-                ArrayList DataStore = new ArrayList();
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    string[] sArray = line.Split(',');
-                    Datal data = new Datal();
-                    data.qs = sArray[0];
-                    data.zcpj = sArray[1];
-                    DataStore.Add(data);
-                }
-                
-                sr.Close();
-
-                //插注记啦
-                for (int i = 0; i < DataStore.Count; i++)
-                {
-                    double X;
-                    double Y;
-                    X = pPoint.X + 3.5 * r * Math.Cos(2 * i * Math.PI / 18);
-                    Y = pPoint.Y + 3.5 * r * Math.Sin(2 * i * Math.PI / 18);
-                    m_PointPt.X = X;
-                    m_PointPt.Y = Y;
-                    ITextElement ptext = new TextElementClass();
-                    Datal a = DataStore[i] as Datal;
-                    string str = a.qs;
-                    ptext.Text = str;
-                    ITextSymbol pSymbol = new TextSymbolClass();
-                    pSymbol.Size = 5;
-                    ptext.Symbol = pSymbol;
-                    IElement pEle = ptext as IElement;
-                    pEle.Geometry = m_PointPt;
-                    pGraphicsContainer.AddElement(pEle, 0);
-
-                }
-
-                //画数据
-                IPoint[] points = new IPoint[DataStore.Count];
-                for (int i = 0; i < DataStore.Count; i++)
-                {
-                    Datal a = DataStore[i] as Datal;
-                    string str = a.zcpj;
-                    double number = double.Parse(str);
-
-                    double x;
-                    double y;
-                    x = pPoint.X + number * 3 * r * Math.Cos(2 * i * Math.PI / 18) / 1565;
-                    y = pPoint.Y + number * 3 * r * Math.Sin(2 * i * Math.PI / 18) / 1565;
-                    IPoint pt = new PointClass();
-                    pt.PutCoords(x, y);
-                    points[i] = pt;
-                    //MessageBox.Show("坐标生成");
-
-                }
-
-                for (int i = 0; i < 17; i++)
-                {
-                    ILine pLine;
-                    pLine = new LineClass();
-                    pLine.PutCoords(points[i], points[i + 1]);
-                    IGeometryCollection pPolyline;
-                    pPolyline = new PolylineClass();
-                    ISegmentCollection pPath;
-                    pPath = new PathClass();
-                    object Missing1 = Type.Missing;
-                    object Missing2 = Type.Missing;
-                    pPath.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
-                    pPolyline.AddGeometry(pPath as IGeometry, ref Missing1, ref Missing2);
-
-                    IRgbColor rGBColor = new RgbColorClass();
-                    rGBColor.Red = 0;
-                    rGBColor.Green = 112;
-                    rGBColor.Blue = 255;
-
-                    IElement element = DrawLineSymbol(pPolyline as IGeometry, rGBColor);
-
-                    pGraphicsContainer.AddElement(element, 0);
-                }
-                ILine pLine2;
-                pLine2 = new LineClass();
-                pLine2.PutCoords(points[17], points[0]);
-                IGeometryCollection pPolyline2;
-                pPolyline2 = new PolylineClass();
-                ISegmentCollection pPath2;
-                pPath2 = new PathClass();
-                object Missing12 = Type.Missing;
-                object Missing22 = Type.Missing;
-                pPath2.AddSegment(pLine2 as ISegment, ref Missing12, ref Missing22);
-                pPolyline2.AddGeometry(pPath2 as IGeometry, ref Missing12, ref Missing22);
-
-                IRgbColor rGBColor2 = new RgbColorClass();
-                rGBColor2.Red = 0;
-                rGBColor2.Green = 112;
-                rGBColor2.Blue = 255;
-
-                IElement element2 = DrawLineSymbol(pPolyline2 as IGeometry, rGBColor2);
-
-                pGraphicsContainer.AddElement(element2, 0);
-
-
-
-                //注记
-                IFontDisp pFont = new StdFont()
-                {
-                    Name = "宋体",
-                    Size = 5
-                } as IFontDisp;
-
-                ITextSymbol pTextSymbol = new TextSymbolClass()
-                {
-                    Color = pColor,
-                    Font = pFont,
-                    Size = 11
-                };
-                IGraphicsContainer pGraContainer = axMapControl1.Map as IGraphicsContainer;
-                                
-                this.axMapControl1.Refresh();
-
-            }
-            #endregion
 
 
         }
@@ -1244,7 +1067,7 @@ namespace Whu038
             {
                 pLayer = axMapControl1.get_Layer(i);
                 strLayerName = pLayer.Name;
-                if (strLayerName == "饼图点")
+                if (strLayerName == "地类图斑_新融合")
                 {
                     index = i;
                 }
@@ -1266,10 +1089,10 @@ namespace Whu038
                 //MessageBox.Show("未能找到有效路径" + a.qs, "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
                 Double x = new double();
                 Double y = new double();
-                index = pFeatureClass.Fields.FindField("x");
+                index = pFeatureClass.Fields.FindField("Sheet1$.总分值");
                 IQueryFilter pQueryFilter = new QueryFilterClass();
-                pQueryFilter.SubFields = "x";
-                pQueryFilter.WhereClause = "权属名称='" + a.qs + "'";
+                pQueryFilter.SubFields = "Sheet1$.总分值";
+                pQueryFilter.WhereClause = "地类图斑_新融合.name='" + a.qs + "'";
                 IFeatureCursor featureCursor;
                 featureCursor = pFeatureClass.Search(pQueryFilter, false);
                 IFeature pFeature;
@@ -1277,12 +1100,12 @@ namespace Whu038
                 x = Double.Parse(pFeature.get_Value(index).ToString());
 
 
-                index = pFeatureClass.Fields.FindField("y");
-                pQueryFilter.SubFields = "y";
-                pQueryFilter.WhereClause = "权属名称='" + a.qs + "'";
-                featureCursor = pFeatureClass.Search(pQueryFilter, false);
-                pFeature = featureCursor.NextFeature();
-                y = Double.Parse(pFeature.get_Value(index).ToString());
+                //index = pFeatureClass.Fields.FindField("y");
+                //pQueryFilter.SubFields = "y";
+                //pQueryFilter.WhereClause = "权属名称='" + a.qs + "'";
+                //featureCursor = pFeatureClass.Search(pQueryFilter, false);
+                //pFeature = featureCursor.NextFeature();
+                //y = Double.Parse(pFeature.get_Value(index).ToString());
 
                 //画图啦
                 IMap pMap;
@@ -1329,233 +1152,377 @@ namespace Whu038
                 IGraphicsContainer pContainer = pMap as IGraphicsContainer;
                 pContainer.AddElement(pEle, 0);
 
-
-
             }
     }
 
         private void 柱状图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _enumChartType = EnumChartRenderType.BarChart;
-            ILayer pLayer = null;
-            IFeatureLayer mFeatureLayer = null;
-            for (int i = 0; i < axMapControl1.LayerCount; i++)
-            {
-                ILayer pLayert;
-                pLayert = axMapControl1.get_Layer(i);
-                if (pLayert.Name == "")
-                {
-                    pLayer = pLayert;
-                    mFeatureLayer = pLayert as IFeatureLayer;
-                }
-            }
 
-            Dictionary<string, IRgbColor> _dicFieldAndColor = null;
-            _dicFieldAndColor = new Dictionary<string, IRgbColor>();
-            IRgbColor pRgbColor = null;
-            OperateMap m_OperMap = new OperateMap();
+            List<string> renderFields = new List<string>();
+            renderFields.Add("地类图斑_新融合.fenzhi");
+           
+            //对应颜色
+            List<IColor> renderColor = new List<IColor>();
+            renderColor.Add(getRGB(1, 2, 3));
+         
 
-            pRgbColor = m_OperMap.GetRgbColor(252, 141, 98);
-            _dicFieldAndColor.Add("总分值", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
-            //_dicFieldAndColor.Add("旱地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
-            //_dicFieldAndColor.Add("园地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
-            //_dicFieldAndColor.Add("草地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
-            //_dicFieldAndColor.Add("水域", pRgbColor);
-
-            ChartRenderer(mFeatureLayer, _dicFieldAndColor);
+            IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
+            createBarChart("地类图斑_新融合", renderFields, renderColor, BgColor);
+                      
         }
         private void 饼状图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _enumChartType = EnumChartRenderType.PieChart;
-            ILayer pLayer = null;
-            IFeatureLayer mFeatureLayer = null;
-            for (int i = 0; i < axMapControl1.LayerCount; i++)
-            {
-                ILayer pLayert;
-                pLayert = axMapControl1.get_Layer(i);
-                if (pLayert.Name == "饼图点")
-                {
-                    pLayer = pLayert;
-                    mFeatureLayer = pLayert as IFeatureLayer;
-                }
-            }
+            List<string> renderFields = new List<string>();            
+            renderFields.Add("Sheet1$.居民地比例"); 
+            renderFields.Add("Sheet1$.人口密度");
+            renderFields.Add("Sheet1$.平均海拔");
+            renderFields.Add("Sheet1$.平均坡度");
+            renderFields.Add("Sheet1$.与公路距离");
+            renderFields.Add("Sheet1$.坡向离散度");
 
-            Dictionary<string, IRgbColor> _dicFieldAndColor = null;
-            _dicFieldAndColor = new Dictionary<string, IRgbColor>();
-            IRgbColor pRgbColor = null;
-            OperateMap m_OperMap = new OperateMap();
+            //对应颜色
+            List<IColor> renderColor = new List<IColor>();
+            renderColor.Add(getRGB(10, 200, 10));
+            renderColor.Add(getRGB(50, 20, 10));
+            renderColor.Add(getRGB(30, 20, 120));
+            renderColor.Add(getRGB(43, 90, 40));
+            renderColor.Add(getRGB(140, 10, 50));
+            renderColor.Add(getRGB(50, 50, 50));
 
-            pRgbColor = m_OperMap.GetRgbColor(252, 141, 98);
-            _dicFieldAndColor.Add("总分值", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
-            //_dicFieldAndColor.Add("旱地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
-            //_dicFieldAndColor.Add("园地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
-            //_dicFieldAndColor.Add("草地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
-            //_dicFieldAndColor.Add("水域", pRgbColor);
 
-            ChartRenderer(mFeatureLayer, _dicFieldAndColor);
-        }
-        private void 堆叠图ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _enumChartType = EnumChartRenderType.StackChart;
-            ILayer pLayer = null;
-            IFeatureLayer mFeatureLayer = null;
-            for (int i = 0; i < axMapControl1.LayerCount; i++)
-            {
-                ILayer pLayert;
-                pLayert = axMapControl1.get_Layer(i);
-                if (pLayert.Name == "饼图点")
-                {
-                    pLayer = pLayert;
-                    mFeatureLayer = pLayert as IFeatureLayer;
-                }
-            }
-
-            Dictionary<string, IRgbColor> _dicFieldAndColor = null;
-            _dicFieldAndColor = new Dictionary<string, IRgbColor>();
-            IRgbColor pRgbColor = null;
-            OperateMap m_OperMap = new OperateMap();
-
-            pRgbColor = m_OperMap.GetRgbColor(252, 141, 98);
-            _dicFieldAndColor.Add("总分值", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
-            //_dicFieldAndColor.Add("旱地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
-            //_dicFieldAndColor.Add("园地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
-            //_dicFieldAndColor.Add("草地", pRgbColor);
-            //pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
-            //_dicFieldAndColor.Add("水域", pRgbColor);
-
-            ChartRenderer(mFeatureLayer, _dicFieldAndColor);
+            IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
+            createPieChart("地类图斑_新融合", renderFields, renderColor, BgColor);
         }
 
 
 
-        private void ChartRenderer(IFeatureLayer pFeatLyr, Dictionary<string, IRgbColor> dicFieldAndColor)
+
+        /*添加柱状图
+        * @layerName图层名
+        * @renderFields字段
+        * @alias别名
+        * @renderColor对应的填充颜色
+        * @BgColor地图填充色
+        */
+        public void createBarChart(string layerName, List<string> renderFields, List<IColor> renderColor, IColor BgColor, List<string> alias = null)
         {
-            IGeoFeatureLayer pGeoFeatLyr = pFeatLyr as IGeoFeatureLayer;
-            IChartRenderer pChartRender = new ChartRendererClass();
-            IRendererFields pRenderFields = pChartRender as IRendererFields;
-            IFeatureCursor pCursor = null;
-            IDataStatistics pDataSta = null;
-            double dMax = 0; double dTemp = 0;
-            IQueryFilter pQueryFilter = new QueryFilterClass();
-            pCursor = pGeoFeatLyr.Search(pQueryFilter, true);
-            //遍历出所选择的第一个字段的最大值，，作为设置专题图的比例大小的依据
-            foreach (KeyValuePair<string, IRgbColor> _keyValue in dicFieldAndColor)
+            IGeoFeatureLayer geoFeatureLayer;
+            IFeatureLayer featureLayer;
+            ITable table;
+
+            geoFeatureLayer = getGeoLayer(layerName);
+            featureLayer = geoFeatureLayer as IFeatureLayer;
+            table = featureLayer as ITable;
+            geoFeatureLayer.ScaleSymbols = true;
+            IChartRenderer chartRenderer = new ChartRendererClass();
+            IBarChartSymbol barChartSymbol = new BarChartSymbolClass();
+            IRendererFields rendererFields = chartRenderer as IRendererFields;
+            for (int i = 0; i < renderFields.Count; i++)
             {
-                pRenderFields.AddField(_keyValue.Key, _keyValue.Key);
-                pDataSta = new DataStatisticsClass();
-                pDataSta.Cursor = pCursor as ICursor;
-                pDataSta.Field = _keyValue.Key;
-                dTemp = pDataSta.Statistics.Maximum;
-                if (dTemp >= dMax)
+                if (null != alias)
+                    rendererFields.AddField(renderFields[i], alias[i]);
+                else
+                    rendererFields.AddField(renderFields[i], renderFields[i]);
+            }
+
+            //找到所有地物类中的最大值
+            double maxValue = 0;
+            ICursor cursor = table.Search(null, true);
+            IRowBuffer rowBuffer = cursor.NextRow();
+            while (rowBuffer != null)
+            {
+                for (int i = 0; i < renderFields.Count; i++)
                 {
-                    dMax = dTemp;
+                    double fieldValue;
+                    try
+                    {
+                        fieldValue = double.Parse(rowBuffer.get_Value(table.FindField(renderFields[i])).ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        fieldValue = 0;
+                    }
+                    maxValue = Math.Max(maxValue, fieldValue);
                 }
+                rowBuffer = cursor.NextRow();
             }
 
-            IRgbColor pRgbColor = null;
-            IChartSymbol pChartSym = null;
-            IFillSymbol pFillSymbol = null;
-            IMarkerSymbol pMarkerSym = null;
-            IBarChartSymbol pBarChartSym = null;
-            IPieChartSymbol pPieChartSymbol = null;
-            IStackedChartSymbol pStackChartSym = null;
+            barChartSymbol.Width = 5;
+            IMarkerSymbol markerSymbol = barChartSymbol as IMarkerSymbol;
+            markerSymbol.Size = 50;
+            IChartSymbol chartSymbol = barChartSymbol as IChartSymbol;
+            chartSymbol.MaxValue = maxValue;
 
-            // 定义并设置渲染样式
-            switch (_enumChartType)
+            //添加渲染符号  
+            ISymbolArray symbolArray = barChartSymbol as ISymbolArray;
+            IFillSymbol fillSymbol;
+            IColorRamp colors = CreateRandomColorRamp(renderFields.Count);//ramp舷梯
+            for (int i = 0; i < renderFields.Count; i++)
             {
-                case EnumChartRenderType.PieChart:
-                    pPieChartSymbol = new PieChartSymbolClass();
-                    pPieChartSymbol.Clockwise = true;//说明饼图是否顺时针方向
-                    pPieChartSymbol.UseOutline = true;//说明是否使用轮廓线
-                    ILineSymbol pLineSym = new SimpleLineSymbolClass();
-                    //     pLineSym.Color = m_OperateMap.GetRgbColor(100, 205, 30) as IColor;
-                    pLineSym.Width = 1;
-                    pPieChartSymbol.Outline = pLineSym;
-                    break;
-                case EnumChartRenderType.BarChart:
-                    pBarChartSym = new BarChartSymbolClass();
-                    pBarChartSym.Width = 6;//设置每个条形图的宽度
-                    break;
-                case EnumChartRenderType.StackChart:
-                    pStackChartSym = new StackedChartSymbolClass();
-                    pStackChartSym.Width = 6;//设置每个堆叠图的宽度
-                    break;
+                fillSymbol = new SimpleFillSymbolClass();
+                fillSymbol.Color = colors.get_Color(i);
+                symbolArray.AddSymbol(fillSymbol as ISymbol);
             }
-            if (pPieChartSymbol != null)
-            {
-                pChartSym = pPieChartSymbol as IChartSymbol;
-                pMarkerSym = pPieChartSymbol as IMarkerSymbol;
-                pMarkerSym.Size = 20; //设置饼状图的大小
-            }
-            if (pBarChartSym != null)
-            {
-                pChartSym = pBarChartSym as IChartSymbol;
-                pMarkerSym = pBarChartSym as IMarkerSymbol;
-                pMarkerSym.Size = 30;//设置条形图的高度
-            }
-            else if (pStackChartSym != null)
-            {
-                pChartSym = pStackChartSym as IChartSymbol;
-                pMarkerSym = pStackChartSym as IMarkerSymbol;
-                pMarkerSym.Size = 20;//设置堆叠图的高度
-            }
-            pChartSym.MaxValue = dMax;
-            ISymbolArray pSymArray = null;
-            if (pBarChartSym != null)
-            {
-                pSymArray = pBarChartSym as ISymbolArray;
-            }
-            else if (pStackChartSym != null)
-            {
-                pSymArray = pStackChartSym as ISymbolArray;
-            }
-            else if (pPieChartSymbol != null)
-            {
-                pSymArray = pPieChartSymbol as ISymbolArray;
-            }
+            //设置柱状图符号  
+            chartRenderer.ChartSymbol = barChartSymbol as IChartSymbol;
 
-            foreach (KeyValuePair<string, IRgbColor> _keyValue in dicFieldAndColor)
-            {
-                //获取渲染字段的颜色值
-                pRgbColor = _keyValue.Value;
-                pFillSymbol = new SimpleFillSymbolClass();
-                pFillSymbol.Color = pRgbColor as IColor;
-                pSymArray.AddSymbol(pFillSymbol as ISymbol);
-            }
-            if (pPieChartSymbol != null)
-            {
-                pChartRender.ChartSymbol = pPieChartSymbol as IChartSymbol;
-            }
-            if (pBarChartSym != null)
-            {
-                pChartRender.ChartSymbol = pBarChartSym as IChartSymbol;
-            }
-            else if (pStackChartSym != null)
-            {
-                pChartRender.ChartSymbol = pStackChartSym as IChartSymbol;
-            }
+            //行政区填充
+            fillSymbol = new SimpleFillSymbolClass();
+            fillSymbol.Color = getRGB(245, 235, 186);
+            fillSymbol.Color.Transparency = 2;
+            chartRenderer.BaseSymbol = fillSymbol as ISymbol;
 
-            //     pFillSymbol = new SimpleFillSymbolClass();
-            //      pFillSymbol.Color = m_OperateMap.GetRgbColor(239, 228, 190);
-            //      pChartRender.BaseSymbol = pFillSymbol as ISymbol;// 设置背景符号
-            //让符号处于图形中央（若渲染的图层为点图层，则该句应去掉，否则不显示渲染结果）
-            //pChartRender.UseOverposter = false; 
-            pChartRender.CreateLegend();
-            pGeoFeatLyr.Renderer = pChartRender as IFeatureRenderer;
-            axMapControl1.Refresh();
+            chartRenderer.UseOverposter = false;
+
+            //创建图例  
+            chartRenderer.CreateLegend();
+            geoFeatureLayer.Renderer = chartRenderer as IFeatureRenderer;
+            geoFeatureLayer.DisplayField = "地类图斑_新融合.OBJECTID";
+
+            IActiveView pActiveView = axMapControl1.Map as IActiveView;
+            pActiveView.Refresh();
             axTOCControl1.Update();
-            _enumChartType = EnumChartRenderType.UnKnown;
+        }
+
+
+        /*添加饼状图
+         * @layerName要图层名
+         * @renderFields字段
+        * @renderColor对应的填充颜色
+         * @BgColor地图填充色
+         */
+        public void createPieChart(string layerName, List<string> renderFields, List<IColor> renderColor, IColor BgColor)
+        {
+            IGeoFeatureLayer geoFeatureLayer;
+            IFeatureLayer featureLayer;
+            ITable table;
+            ICursor cursor;
+            IRowBuffer rowBuffer;
+
+            //获取渲染图层
+            geoFeatureLayer = getGeoLayer(layerName);
+            featureLayer = geoFeatureLayer as IFeatureLayer;
+            table = featureLayer as ITable;
+            geoFeatureLayer.ScaleSymbols = true;
+            IChartRenderer chartRenderer = new ChartRendererClass();
+            IPieChartRenderer pieChartRenderer = chartRenderer as IPieChartRenderer;
+            IRendererFields rendererFields = chartRenderer as IRendererFields;
+            for (int i = 0; i < renderFields.Count; i++)
+            {
+                rendererFields.AddField(renderFields[i], renderFields[i]);
+            }
+            //获取渲染要素的最大值
+            double fieldValue = 0.0, maxValue = 0.0;
+            cursor = table.Search(null, true);
+            rowBuffer = cursor.NextRow();
+            while (rowBuffer != null)
+            {
+                for (int i = 0; i < renderFields.Count; i++)
+                {
+                    int index = table.FindField(renderFields[i]);
+                    fieldValue = double.Parse(rowBuffer.get_Value(index).ToString());
+                    if (fieldValue > maxValue)
+                        maxValue = fieldValue;
+                }
+                rowBuffer = cursor.NextRow();
+            }
+            //设置饼图符号
+            IPieChartSymbol pieChartSymbol = new PieChartSymbolClass();
+            pieChartSymbol.Clockwise = true;
+            pieChartSymbol.UseOutline = true;
+            IChartSymbol chartSymbol = pieChartSymbol as IChartSymbol;
+            chartSymbol.MaxValue = maxValue;
+            ILineSymbol lineSymbol = new SimpleLineSymbolClass();
+            lineSymbol.Color = getRGB(255, 192, 203);//默认和背景一致
+            lineSymbol.Width = 1.5;
+            pieChartSymbol.Outline = lineSymbol;
+            IMarkerSymbol markerSymbol = pieChartSymbol as IMarkerSymbol;
+            markerSymbol.Size = 30;
+
+            //添加渲染符号
+            ISymbolArray symbolArray = pieChartSymbol as ISymbolArray;
+            IFillSymbol[] fillsymbol = new IFillSymbol[renderFields.Count];
+            for (int i = 0; i < renderFields.Count; i++)
+            {
+                fillsymbol[i] = new SimpleFillSymbolClass();
+                fillsymbol[i].Color = renderColor[i];
+                symbolArray.AddSymbol(fillsymbol[i] as ISymbol);
+            }
+
+            //设置背景
+            chartRenderer.ChartSymbol = pieChartSymbol as IChartSymbol;
+            IFillSymbol pFillSymbol = new SimpleFillSymbolClass();
+            pFillSymbol.Color = BgColor;
+            chartRenderer.BaseSymbol = pFillSymbol as ISymbol;
+            chartRenderer.UseOverposter = false;
+            //创建图例
+            chartRenderer.CreateLegend();
+            geoFeatureLayer.Renderer = chartRenderer as IFeatureRenderer;
+
+            IActiveView pActiveView = axMapControl1.Map as IActiveView;
+            pActiveView.Refresh();
+            axTOCControl1.Update();
+        }
+        
+        
+        
+        /*添加雷达图
+        * @layerName图层名
+        * @renderFields字段
+        * @renderColor线条颜色
+        * @BgColor雷达图背景色
+        */
+        public void creatRadarChart(string layerName, List<string> renderFields, IColor renderColor, IColor BgColor)
+        {
+            IGeoFeatureLayer geoFeatureLayer;
+            IFeatureLayer featureLayer;
+            IFeatureClass featureClass;//IFeatureClass 控制要访问的要素类
+            IFeatureCursor featureCursor;//游标，用于访问要素
+            IFeature feature;//每一个要素
+            ITable table;
+
+            IGraphicsContainer pGraContainer = axMapControl1.Map as IGraphicsContainer;
+
+            geoFeatureLayer = getGeoLayer(layerName);
+            if (null == geoFeatureLayer)
+                return;
+            featureLayer = geoFeatureLayer as IFeatureLayer;
+            table = featureLayer as ITable;
+
+            //找到所有地物类中所有字段的最大值
+            double maxValue = 0;
+            ICursor cursor = table.Search(null, true);
+            IRowBuffer rowBuffer = cursor.NextRow();
+            while (rowBuffer != null)
+            {
+                for (int i = 0; i < renderFields.Count; i++)
+                {
+                    double fieldValue;
+                    try
+                    {
+                        fieldValue = double.Parse(rowBuffer.get_Value(table.FindField(renderFields[i])).ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        fieldValue = 0;
+                    }
+                    maxValue = Math.Max(maxValue, fieldValue);
+                }
+                rowBuffer = cursor.NextRow();
+            }
+
+
+            featureClass = featureLayer.FeatureClass;
+            featureCursor = featureClass.Search(null, false);//访问地图要素的游标
+            feature = featureCursor.NextFeature();
+
+            List<int> index = new List<int>();//储存字段索引
+            for (int i = 0; i < renderFields.Count; i++)
+                index.Add(feature.Fields.FindField(renderFields[i]));//FindField返回要标注字段的索引值
+
+            IGraphicsContainer container = axMapControl1.Map as IGraphicsContainer;
+            IEnvelope pEnv = null;//获取每个要素(行政村)的外接矩形
+            //对地图要素(行政村)进行循环
+            while (feature != null)
+            {
+                //使用地理对象的中心作为标注的位置
+                pEnv = feature.Extent;
+                IPoint centerPt = new PointClass();
+                centerPt.PutCoords(pEnv.XMin + pEnv.Width * 0.5, pEnv.YMin + pEnv.Height * 0.5);
+
+
+                //雷达图由同心多边形、柱线、数据线构成
+                IPolyline polyline_pillar = new PolylineClass();//柱线
+
+                int radius = 200;//最小多边形半径
+                //绘制4个同心多边形
+                for (int i = 0; i < 4; i++)
+                {
+                    IPolygon polygon_frame = new PolygonClass();//同心多边形
+                    IPolygon polygon_data = new PolygonClass();//数据多边形
+                    object missing = Type.Missing;
+
+                    //多边形分成renderFields.count个等角区域
+                    double currentAngle = Math.PI / 2;//从PI/2处开始旋转
+                    for (int j = 0; j < renderFields.Count; j++)
+                    {
+                        IPoint pt_frame = new PointClass();
+                        pt_frame.X = radius * Math.Cos(currentAngle) + centerPt.X;
+                        pt_frame.Y = radius * Math.Sin(currentAngle) + centerPt.Y;
+                        (polygon_frame as IPointCollection).AddPoint(pt_frame, ref missing, ref missing);
+
+                        //绘制最后一个同心多边形，同时开始绘制线柱以及绘制数据
+                        if (i == 3)
+                        {
+                            //柱线端点
+                            (polyline_pillar as IPointCollection).AddPoint(pt_frame);
+                            (polyline_pillar as IPointCollection).AddPoint(centerPt);
+
+                            //数据点
+                            IPoint pt_data = new PointClass();
+                            pt_data.X = Convert.ToDouble(feature.get_Value(index[j])) / maxValue * radius * Math.Cos(currentAngle) + centerPt.X;
+                            pt_data.Y = Convert.ToDouble(feature.get_Value(index[j])) / maxValue * radius * Math.Sin(currentAngle) + centerPt.Y;
+                            (polygon_data as IPointCollection).AddPoint(pt_data);
+                        }
+                        currentAngle += 2 * Math.PI / renderFields.Count;//旋转到下一个字段
+                    }
+                    radius += 150;//增加半径,绘制下一个同心多边形
+
+
+                    //雷达图样式
+                    //symbol_frame
+                    ISimpleFillSymbol fillSymbol_0 = new SimpleFillSymbolClass();
+                    fillSymbol_0.Style = esriSimpleFillStyle.esriSFSNull;//esriSFSDiagonalCross
+                    fillSymbol_0.Color = getRGB(240, 240, 240);
+
+                    //symbol_pillar && symbol_frame线样式
+                    ILineSymbol lineSymbol_0 = new SimpleLineSymbolClass();
+                    lineSymbol_0.Width = 0.05;//esriSFSDiagonalCross
+                    lineSymbol_0.Color = getRGB(150, 150, 150);
+                    fillSymbol_0.Outline = lineSymbol_0;
+
+                    //框架多边形element
+                    IFillShapeElement fillElem_frame = new PolygonElementClass();
+                    fillElem_frame.Symbol = fillSymbol_0;
+                    IElement pElement_frame = fillElem_frame as IElement;
+                    pElement_frame.Geometry = polygon_frame as IGeometry;
+                    container.AddElement(pElement_frame, 0);
+
+                    if (i == 3)
+                    {
+                        //柱线
+                        ILineElement lineElem_pillar = new LineElementClass();
+                        lineElem_pillar.Symbol = lineSymbol_0;
+                        IElement pElement1 = lineElem_pillar as IElement;
+                        pElement1.Geometry = polyline_pillar as IGeometry;
+                        container.AddElement(pElement1, 0);
+
+
+
+                        //数据线样式
+                        ISimpleFillSymbol fillSymbol_1 = new SimpleFillSymbolClass();
+                        fillSymbol_1.Style = esriSimpleFillStyle.esriSFSSolid;//esriSFSDiagonalCross
+                        fillSymbol_1.Color = getRGB(230, 0, 0);
+
+                        ILineSymbol lineSymbol_1 = new SimpleLineSymbolClass();
+                        lineSymbol_1.Width = 1;//esriSFSDiagonalCross
+                        lineSymbol_1.Color = getRGB(230, 0, 0);
+
+                        fillSymbol_1.Outline = lineSymbol_1;
+
+                        //数据折线
+                        IFillShapeElement fillElem_data = new PolygonElementClass();
+                        fillElem_data.Symbol = fillSymbol_1;
+                        IElement pElement_data = fillElem_data as IElement;
+                        pElement_data.Geometry = polygon_data as IGeometry;
+
+                        container.AddElement(pElement_data, 0);
+                    }
+                }
+                feature = featureCursor.NextFeature();//循环遍历元素
+            }//对地图元素（行政区）进行循环
+            IActiveView activeView = axMapControl1.Map as IActiveView;
+            activeView.PartialRefresh(esriViewDrawPhase.esriViewGraphics, null, null);//axMapControl1.Extent
         }
 
         #endregion
@@ -1834,10 +1801,6 @@ namespace Whu038
         }
 
 
-
-
         #endregion
-
- 
     }
 }

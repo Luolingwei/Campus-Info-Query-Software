@@ -59,7 +59,6 @@
             this.自动生成ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.柱状图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.饼状图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.堆叠图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.开始分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.清除分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -331,8 +330,7 @@
             // 
             this.自动生成ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.柱状图ToolStripMenuItem,
-            this.饼状图ToolStripMenuItem,
-            this.堆叠图ToolStripMenuItem});
+            this.饼状图ToolStripMenuItem});
             this.自动生成ToolStripMenuItem.Name = "自动生成ToolStripMenuItem";
             this.自动生成ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.自动生成ToolStripMenuItem.Text = "自动生成";
@@ -340,23 +338,16 @@
             // 柱状图ToolStripMenuItem
             // 
             this.柱状图ToolStripMenuItem.Name = "柱状图ToolStripMenuItem";
-            this.柱状图ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.柱状图ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.柱状图ToolStripMenuItem.Text = "柱状图";
             this.柱状图ToolStripMenuItem.Click += new System.EventHandler(this.柱状图ToolStripMenuItem_Click);
             // 
             // 饼状图ToolStripMenuItem
             // 
             this.饼状图ToolStripMenuItem.Name = "饼状图ToolStripMenuItem";
-            this.饼状图ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.饼状图ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.饼状图ToolStripMenuItem.Text = "饼状图";
             this.饼状图ToolStripMenuItem.Click += new System.EventHandler(this.饼状图ToolStripMenuItem_Click);
-            // 
-            // 堆叠图ToolStripMenuItem
-            // 
-            this.堆叠图ToolStripMenuItem.Name = "堆叠图ToolStripMenuItem";
-            this.堆叠图ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
-            this.堆叠图ToolStripMenuItem.Text = "堆叠图";
-            this.堆叠图ToolStripMenuItem.Click += new System.EventHandler(this.堆叠图ToolStripMenuItem_Click);
             // 
             // 网络分析ToolStripMenuItem
             // 
@@ -396,28 +387,28 @@
             // 指北针ToolStripMenuItem
             // 
             this.指北针ToolStripMenuItem.Name = "指北针ToolStripMenuItem";
-            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.指北针ToolStripMenuItem.Text = "指北针";
             this.指北针ToolStripMenuItem.Click += new System.EventHandler(this.指北针ToolStripMenuItem_Click);
             // 
             // 比例尺ToolStripMenuItem
             // 
             this.比例尺ToolStripMenuItem.Name = "比例尺ToolStripMenuItem";
-            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.比例尺ToolStripMenuItem.Text = "比例尺";
             this.比例尺ToolStripMenuItem.Click += new System.EventHandler(this.比例尺ToolStripMenuItem_Click);
             // 
             // 图廓ToolStripMenuItem
             // 
             this.图廓ToolStripMenuItem.Name = "图廓ToolStripMenuItem";
-            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.图廓ToolStripMenuItem.Text = "图廓";
             this.图廓ToolStripMenuItem.Click += new System.EventHandler(this.图廓ToolStripMenuItem_Click);
             // 
             // 图例ToolStripMenuItem
             // 
             this.图例ToolStripMenuItem.Name = "图例ToolStripMenuItem";
-            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.图例ToolStripMenuItem.Text = "图例";
             this.图例ToolStripMenuItem.Click += new System.EventHandler(this.图例ToolStripMenuItem_Click);
             // 
@@ -656,7 +647,6 @@
         private System.Windows.Forms.ToolStripMenuItem 自动生成ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 柱状图ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 饼状图ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 堆叠图ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 雷达图ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 柱状图ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 开始分析ToolStripMenuItem;

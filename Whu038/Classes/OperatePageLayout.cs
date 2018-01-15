@@ -45,7 +45,7 @@ namespace Whu038.Classes
             {
                 //MessageBox.Show(path);
 
-                if (path.Substring(t, 16) == "Whu038")
+                if (path.Substring(t, 8) == "Whu038")
                 {
                     break;
                 }

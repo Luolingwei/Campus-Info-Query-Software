@@ -43,8 +43,9 @@ namespace Whu038
         {
             SymbologyCtrl.Clear();
             //MessageBox.Show("123");
-            
-            string StyleFilePath = OperatePageLayout.getPath(filepath) + "\\data\\Symbol\\ESRI.ServerStyle";//载入系统符号库
+
+            //string StyleFilePath = OperatePageLayout.getPath(filepath) + "\\data\\Symbol\\ESRI.ServerStyle";//载入系统符号库
+            string StyleFilePath = "C:\\Users\\asus\\Desktop\\GIS实习\\实习三\\CMYK.style";//载入系统符号库
             MessageBox.Show(StyleFilePath);
             SymbologyCtrl.LoadStyleFile(StyleFilePath);
             switch (_enumMapSurType)
