@@ -38,27 +38,25 @@ namespace Whu038
         {
             InitializeComponent();
         }
-
+       
         public void InitUI()
         {
-            SymbologyCtrl.Clear();
-            //MessageBox.Show("123");
+            SymbologyCtrl.Clear();           
 
             //string StyleFilePath = OperatePageLayout.getPath(filepath) + "\\data\\Symbol\\ESRI.ServerStyle";//载入系统符号库
-            string StyleFilePath = "C:\\Users\\asus\\Desktop\\GIS实习\\实习三\\CMYK.style";//载入系统符号库
-            MessageBox.Show(StyleFilePath);
+            string StyleFilePath = "D:\\ESRI.ServerStyle";//载入系统符号库            
             SymbologyCtrl.LoadStyleFile(StyleFilePath);
             switch (_enumMapSurType)
             {
 
-                //case Whu038.EnumMapSurroundType.NorthArrow://根据选择，载入系统指北针符号库
-                //    SymbologyCtrl.StyleClass = esriSymbologyStyleClass.esriStyleClassNorthArrows;
-                //    pSymStyleClass = SymbologyCtrl.GetStyleClass(esriSymbologyStyleClass.esriStyleClassNorthArrows);
-                //    break;
-                //case Whu038.EnumMapSurroundType.ScaleBar://根据选择，载入系统比例尺符号库
-                //    SymbologyCtrl.StyleClass = esriSymbologyStyleClass.esriStyleClassScaleBars;
-                //    pSymStyleClass = SymbologyCtrl.GetStyleClass(esriSymbologyStyleClass.esriStyleClassScaleBars);
-                //    break;
+                case Whu038.EnumMapSurroundType.NorthArrow://根据选择，载入系统指北针符号库
+                    SymbologyCtrl.StyleClass = esriSymbologyStyleClass.esriStyleClassNorthArrows;
+                    pSymStyleClass = SymbologyCtrl.GetStyleClass(esriSymbologyStyleClass.esriStyleClassNorthArrows);
+                    break;
+                case Whu038.EnumMapSurroundType.ScaleBar://根据选择，载入系统比例尺符号库
+                    SymbologyCtrl.StyleClass = esriSymbologyStyleClass.esriStyleClassScaleBars;
+                    pSymStyleClass = SymbologyCtrl.GetStyleClass(esriSymbologyStyleClass.esriStyleClassScaleBars);
+                    break;
             }
             pSymStyleClass.UnselectItem();
         }

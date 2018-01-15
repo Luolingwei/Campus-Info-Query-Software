@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Whu038.Classes
+namespace Whu038
 {
     public enum EnumMapSurroundType
     {

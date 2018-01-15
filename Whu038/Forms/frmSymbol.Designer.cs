@@ -41,7 +41,7 @@
             this.SymbologyCtrl.Margin = new System.Windows.Forms.Padding(4);
             this.SymbologyCtrl.Name = "SymbologyCtrl";
             this.SymbologyCtrl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("SymbologyCtrl.OcxState")));
-            this.SymbologyCtrl.Size = new System.Drawing.Size(533, 389);
+            this.SymbologyCtrl.Size = new System.Drawing.Size(374, 289);
             this.SymbologyCtrl.TabIndex = 1;
             // 
             // button1

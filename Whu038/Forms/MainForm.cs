@@ -1765,7 +1765,8 @@ namespace Whu038
             caozuo = 1;
         }
 
-        private void axPageLayoutControl1_OnMouseMove_1(object sender, IPageLayoutControlEvents_OnMouseMoveEvent e)
+
+        private void axPageLayoutControl1_OnMouseMove(object sender, IPageLayoutControlEvents_OnMouseMoveEvent e)
         {
             try
             {
@@ -1782,9 +1783,10 @@ namespace Whu038
             {
 
             }
-        }
+        }       
 
-        private void axPageLayoutControl1_OnMouseUp_1(object sender, IPageLayoutControlEvents_OnMouseUpEvent e)
+
+        private void axPageLayoutControl1_OnMouseUp(object sender, IPageLayoutControlEvents_OnMouseUpEvent e)
         {
             if (_enumMapSurType != EnumMapSurroundType.None)
             {
@@ -1799,7 +1801,7 @@ namespace Whu038
                 }
             }
         }
-
+ 
         private void axPageLayoutControl1_OnMouseDown(object sender, IPageLayoutControlEvents_OnMouseDownEvent e)
         {
             try
@@ -2105,8 +2107,10 @@ namespace Whu038
 
 
 
+
+
         #endregion
 
-  
+ 
     }
 }
