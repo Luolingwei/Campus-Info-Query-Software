@@ -300,7 +300,7 @@
             // 选择统计ToolStripMenuItem
             // 
             this.选择统计ToolStripMenuItem.Name = "选择统计ToolStripMenuItem";
-            this.选择统计ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.选择统计ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.选择统计ToolStripMenuItem.Text = "选择统计";
             this.选择统计ToolStripMenuItem.Click += new System.EventHandler(this.选择统计ToolStripMenuItem_Click);
             // 
@@ -323,8 +323,9 @@
             // 柱状图ToolStripMenuItem1
             // 
             this.柱状图ToolStripMenuItem1.Name = "柱状图ToolStripMenuItem1";
-            this.柱状图ToolStripMenuItem1.Size = new System.Drawing.Size(159, 26);
+            this.柱状图ToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
             this.柱状图ToolStripMenuItem1.Text = "分区柱状图";
+            this.柱状图ToolStripMenuItem1.Click += new System.EventHandler(this.分区柱状图ToolStripMenuItem1_Click);
             // 
             // 自动生成ToolStripMenuItem
             // 
@@ -333,7 +334,7 @@
             this.饼状图ToolStripMenuItem,
             this.堆叠图ToolStripMenuItem});
             this.自动生成ToolStripMenuItem.Name = "自动生成ToolStripMenuItem";
-            this.自动生成ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
+            this.自动生成ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.自动生成ToolStripMenuItem.Text = "自动生成";
             // 
             // 柱状图ToolStripMenuItem
@@ -395,28 +396,28 @@
             // 指北针ToolStripMenuItem
             // 
             this.指北针ToolStripMenuItem.Name = "指北针ToolStripMenuItem";
-            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.指北针ToolStripMenuItem.Text = "指北针";
             this.指北针ToolStripMenuItem.Click += new System.EventHandler(this.指北针ToolStripMenuItem_Click);
             // 
             // 比例尺ToolStripMenuItem
             // 
             this.比例尺ToolStripMenuItem.Name = "比例尺ToolStripMenuItem";
-            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.比例尺ToolStripMenuItem.Text = "比例尺";
             this.比例尺ToolStripMenuItem.Click += new System.EventHandler(this.比例尺ToolStripMenuItem_Click);
             // 
             // 图廓ToolStripMenuItem
             // 
             this.图廓ToolStripMenuItem.Name = "图廓ToolStripMenuItem";
-            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.图廓ToolStripMenuItem.Text = "图廓";
             this.图廓ToolStripMenuItem.Click += new System.EventHandler(this.图廓ToolStripMenuItem_Click);
             // 
             // 图例ToolStripMenuItem
             // 
             this.图例ToolStripMenuItem.Name = "图例ToolStripMenuItem";
-            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.图例ToolStripMenuItem.Text = "图例";
             this.图例ToolStripMenuItem.Click += new System.EventHandler(this.图例ToolStripMenuItem_Click);
             // 

@@ -27,9 +27,7 @@ using Whu038.Forms;
 namespace Whu038
 {
     public partial class MyEngine : Form
-    {/// <summary>
-    /// 
-    /// </summary>
+    {
         private MapView m_MapView ;
         public MyEngine()
         {
@@ -45,8 +43,16 @@ namespace Whu038
         public class Datal
         {
             public string qs;
-            public string rjgd;
-
+            public string zcpj;
+        }
+        public class Datad
+        {
+            public string qs;
+            public double fenzhi;
+            //public double hd;
+            //public double qml;
+            public double x;
+            public double y;
         }
 
         private ILayer pGlobalFeatureLayer = null;    //获取当前图层
@@ -368,7 +374,7 @@ namespace Whu038
                 */
                 //读txt
                 string dir = "D:\\";
-                string file = "rjgd.txt";
+                string file = "zcpj.txt";
                 StreamReader sr = new StreamReader(dir + file);
                 /* while (sr.Peek() > -1)
                  {
@@ -382,7 +388,7 @@ namespace Whu038
                     string[] sArray = line.Split(',');
                     Datal data = new Datal();
                     data.qs = sArray[0];
-                    data.rjgd = sArray[1];
+                    data.zcpj = sArray[1];
                     DataStore.Add(data);
                 }
                 
@@ -415,7 +421,7 @@ namespace Whu038
                 for (int i = 0; i < DataStore.Count; i++)
                 {
                     Datal a = DataStore[i] as Datal;
-                    string str = a.rjgd;
+                    string str = a.zcpj;
                     double number = double.Parse(str);
 
                     double x;
@@ -494,6 +500,8 @@ namespace Whu038
 
             }
             #endregion
+
+
         }
 
         private IElement DrawLineSymbol(IGeometry pGeometry, IRgbColor pColor)
@@ -760,7 +768,6 @@ namespace Whu038
             }
         }
 
-
         private void axMapControl1_OnMouseUp_1(object sender, IMapControlEvents2_OnMouseUpEvent e)
         {
             //漫游（BaseTool方法）
@@ -1011,7 +1018,7 @@ namespace Whu038
 
         private void MyEngine_Load(object sender, EventArgs e)
         {
-            axMapControl1.LoadMxFile(@"C:\Users\asus\Desktop\GIS实习\实习二\HCZ2.mxd");
+            axMapControl1.LoadMxFile(@"C:\Users\asus\Desktop\GIS实习\实习二\LLW2.mxd");
             axMapControl1.Refresh();
 
             /*
@@ -1197,13 +1204,135 @@ namespace Whu038
             StatisticsForm statistic = new StatisticsForm(axMapControl1);
             statistic.Show();
         }
-
-
+        
+ 
         private void 雷达图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             caozuo = 999;
         }
 
+        private void 分区柱状图ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ArrayList DataStored = new ArrayList();
+            ArrayList DataMax = new ArrayList();
+            //MessageBox.Show("未能找到有效路径" + statisticqu.DataStore[0], "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
+            string path = "D:\\data.txt";
+            StreamReader sr = new StreamReader(path, Encoding.UTF8);
+            String line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] sArray = line.Split(',');
+                Datad data = new Datad();
+                data.qs = sArray[0];
+                //MessageBox.Show("未能找到有效路径" + data.qs, "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
+                data.fenzhi = double.Parse(sArray[1]);
+
+                DataStored.Add(data);
+                DataMax.Add(data.fenzhi);
+            }
+            //获取定位点
+            //MapControl中没有图层时返回 
+            if (axMapControl1.LayerCount <= 0)
+                return;
+            //获取MapControl中的全部图层名称，并加入ComboBox 
+            //图层 
+            ILayer pLayer;
+            int index = 0;
+            //图层名称 
+            string strLayerName;
+            for (int i = 0; i < axMapControl1.LayerCount; i++)
+            {
+                pLayer = axMapControl1.get_Layer(i);
+                strLayerName = pLayer.Name;
+                if (strLayerName == "饼图点")
+                {
+                    index = i;
+                }
+            }
+            //获取地类图斑图层所有属性数据
+            IFeatureLayer mFeatureLayer;
+            //根据所选择的图层查询得到的特征类
+            IFeatureClass pFeatureClass = null;
+            mFeatureLayer = axMapControl1.get_Layer(index) as IFeatureLayer;
+            pFeatureClass = mFeatureLayer.FeatureClass;
+
+            //绘制矩形，注意最大值的判断
+            DataMax.Sort();
+            DataMax.Reverse();
+            for (int i = 0; i < DataStored.Count; i++)
+            {
+                Datad a = DataStored[i] as Datad;
+                //获取定位点
+                //MessageBox.Show("未能找到有效路径" + a.qs, "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
+                Double x = new double();
+                Double y = new double();
+                index = pFeatureClass.Fields.FindField("x");
+                IQueryFilter pQueryFilter = new QueryFilterClass();
+                pQueryFilter.SubFields = "x";
+                pQueryFilter.WhereClause = "权属名称='" + a.qs + "'";
+                IFeatureCursor featureCursor;
+                featureCursor = pFeatureClass.Search(pQueryFilter, false);
+                IFeature pFeature;
+                pFeature = featureCursor.NextFeature();
+                x = Double.Parse(pFeature.get_Value(index).ToString());
+
+
+                index = pFeatureClass.Fields.FindField("y");
+                pQueryFilter.SubFields = "y";
+                pQueryFilter.WhereClause = "权属名称='" + a.qs + "'";
+                featureCursor = pFeatureClass.Search(pQueryFilter, false);
+                pFeature = featureCursor.NextFeature();
+                y = Double.Parse(pFeature.get_Value(index).ToString());
+
+                //画图啦
+                IMap pMap;
+                IActiveView pActiveView;
+                pMap = axMapControl1.Map;
+                pActiveView = pMap as IActiveView;
+
+                ISegmentCollection pSegColl = new RingClass();
+                ILine pLine = new LineClass();
+                IPoint p1 = new PointClass();
+                p1.PutCoords(x, y);
+                IPoint p2 = new PointClass();
+                p2.PutCoords(x + 300, y);
+                double h = a.fenzhi * 1200 / double.Parse(DataMax[0].ToString());
+                IPoint p3 = new PointClass();
+                p3.PutCoords(x + 300, y + h);
+                IPoint p4 = new PointClass();
+                p4.PutCoords(x, y + h);
+                pLine.PutCoords(p1, p2);
+                object Missing1 = Type.Missing;
+                object Missing2 = Type.Missing;
+                pSegColl.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
+                pLine = new LineClass();
+                pLine.PutCoords(p2, p3);
+                pSegColl.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
+                pLine = new LineClass();
+                pLine.PutCoords(p3, p4);
+                pSegColl.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
+                IRing pRing = pSegColl as IRing;
+                pRing.Close();
+                IGeometryCollection pPolygon = new PolygonClass();
+                pPolygon.AddGeometry(pRing, ref Missing1, ref Missing2);
+                ISimpleFillSymbol pSimpleFillsym = new SimpleFillSymbolClass();
+                pSimpleFillsym.Style = esriSimpleFillStyle.esriSFSSolid;
+                IRgbColor rGBColor = new RgbColorClass();
+                rGBColor.Red = 191;
+                rGBColor.Green = 255;
+                rGBColor.Blue = 255;
+                pSimpleFillsym.Color = rGBColor;
+                IFillShapeElement pPolygonEle = new PolygonElementClass();
+                pPolygonEle.Symbol = pSimpleFillsym;
+                IElement pEle = pPolygonEle as IElement;
+                pEle.Geometry = (IGeometry)pPolygon;
+                IGraphicsContainer pContainer = pMap as IGraphicsContainer;
+                pContainer.AddElement(pEle, 0);
+
+
+
+            }
+    }
 
         private void 柱状图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1227,15 +1356,15 @@ namespace Whu038
             OperateMap m_OperMap = new OperateMap();
 
             pRgbColor = m_OperMap.GetRgbColor(252, 141, 98);
-            _dicFieldAndColor.Add("水田", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
-            _dicFieldAndColor.Add("旱地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
-            _dicFieldAndColor.Add("园地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
-            _dicFieldAndColor.Add("草地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
-            _dicFieldAndColor.Add("水域", pRgbColor);
+            _dicFieldAndColor.Add("总分值", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
+            //_dicFieldAndColor.Add("旱地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
+            //_dicFieldAndColor.Add("园地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
+            //_dicFieldAndColor.Add("草地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
+            //_dicFieldAndColor.Add("水域", pRgbColor);
 
             ChartRenderer(mFeatureLayer, _dicFieldAndColor);
         }
@@ -1261,15 +1390,15 @@ namespace Whu038
             OperateMap m_OperMap = new OperateMap();
 
             pRgbColor = m_OperMap.GetRgbColor(252, 141, 98);
-            _dicFieldAndColor.Add("水田", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
-            _dicFieldAndColor.Add("旱地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
-            _dicFieldAndColor.Add("园地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
-            _dicFieldAndColor.Add("草地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
-            _dicFieldAndColor.Add("水域", pRgbColor);
+            _dicFieldAndColor.Add("总分值", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
+            //_dicFieldAndColor.Add("旱地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
+            //_dicFieldAndColor.Add("园地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
+            //_dicFieldAndColor.Add("草地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
+            //_dicFieldAndColor.Add("水域", pRgbColor);
 
             ChartRenderer(mFeatureLayer, _dicFieldAndColor);
         }
@@ -1295,15 +1424,15 @@ namespace Whu038
             OperateMap m_OperMap = new OperateMap();
 
             pRgbColor = m_OperMap.GetRgbColor(252, 141, 98);
-            _dicFieldAndColor.Add("水田", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
-            _dicFieldAndColor.Add("旱地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
-            _dicFieldAndColor.Add("园地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
-            _dicFieldAndColor.Add("草地", pRgbColor);
-            pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
-            _dicFieldAndColor.Add("水域", pRgbColor);
+            _dicFieldAndColor.Add("总分值", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(141, 160, 203);
+            //_dicFieldAndColor.Add("旱地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(231, 138, 195);
+            //_dicFieldAndColor.Add("园地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(166, 216, 84);
+            //_dicFieldAndColor.Add("草地", pRgbColor);
+            //pRgbColor = m_OperMap.GetRgbColor(255, 217, 47);
+            //_dicFieldAndColor.Add("水域", pRgbColor);
 
             ChartRenderer(mFeatureLayer, _dicFieldAndColor);
         }
@@ -1706,8 +1835,9 @@ namespace Whu038
 
 
 
+
         #endregion
 
-
+ 
     }
 }
