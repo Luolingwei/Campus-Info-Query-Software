@@ -62,11 +62,14 @@
             this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.开始分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.清除分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.分级设色ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.地图整饰ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.指北针ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.比例尺ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.图廓ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.图例ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.色带ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.方里网ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MapExport = new System.Windows.Forms.ToolStripMenuItem();
             this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于软件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,6 +87,7 @@
             this.ScaleLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.CoordinateLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.图名ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.axLicenseControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axTOCControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axMapControl1)).BeginInit();
@@ -153,6 +157,7 @@
             this.缓冲区分袖ToolStripMenuItem,
             this.Statistic,
             this.网络分析ToolStripMenuItem,
+            this.分级设色ToolStripMenuItem,
             this.地图整饰ToolStripMenuItem,
             this.MapExport,
             this.帮助ToolStripMenuItem});
@@ -299,7 +304,7 @@
             // 选择统计ToolStripMenuItem
             // 
             this.选择统计ToolStripMenuItem.Name = "选择统计ToolStripMenuItem";
-            this.选择统计ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.选择统计ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.选择统计ToolStripMenuItem.Text = "选择统计";
             this.选择统计ToolStripMenuItem.Click += new System.EventHandler(this.选择统计ToolStripMenuItem_Click);
             // 
@@ -309,20 +314,20 @@
             this.雷达图ToolStripMenuItem,
             this.柱状图ToolStripMenuItem1});
             this.专题图表ToolStripMenuItem.Name = "专题图表ToolStripMenuItem";
-            this.专题图表ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.专题图表ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.专题图表ToolStripMenuItem.Text = "专题图表";
             // 
             // 雷达图ToolStripMenuItem
             // 
             this.雷达图ToolStripMenuItem.Name = "雷达图ToolStripMenuItem";
-            this.雷达图ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.雷达图ToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
             this.雷达图ToolStripMenuItem.Text = "雷达图";
             this.雷达图ToolStripMenuItem.Click += new System.EventHandler(this.雷达图ToolStripMenuItem_Click);
             // 
             // 柱状图ToolStripMenuItem1
             // 
             this.柱状图ToolStripMenuItem1.Name = "柱状图ToolStripMenuItem1";
-            this.柱状图ToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.柱状图ToolStripMenuItem1.Size = new System.Drawing.Size(159, 26);
             this.柱状图ToolStripMenuItem1.Text = "分区柱状图";
             this.柱状图ToolStripMenuItem1.Click += new System.EventHandler(this.分区柱状图ToolStripMenuItem1_Click);
             // 
@@ -332,20 +337,20 @@
             this.柱状图ToolStripMenuItem,
             this.饼状图ToolStripMenuItem});
             this.自动生成ToolStripMenuItem.Name = "自动生成ToolStripMenuItem";
-            this.自动生成ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.自动生成ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.自动生成ToolStripMenuItem.Text = "自动生成";
             // 
             // 柱状图ToolStripMenuItem
             // 
             this.柱状图ToolStripMenuItem.Name = "柱状图ToolStripMenuItem";
-            this.柱状图ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.柱状图ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.柱状图ToolStripMenuItem.Text = "柱状图";
             this.柱状图ToolStripMenuItem.Click += new System.EventHandler(this.柱状图ToolStripMenuItem_Click);
             // 
             // 饼状图ToolStripMenuItem
             // 
             this.饼状图ToolStripMenuItem.Name = "饼状图ToolStripMenuItem";
-            this.饼状图ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.饼状图ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.饼状图ToolStripMenuItem.Text = "饼状图";
             this.饼状图ToolStripMenuItem.Click += new System.EventHandler(this.饼状图ToolStripMenuItem_Click);
             // 
@@ -373,13 +378,23 @@
             this.清除分析ToolStripMenuItem.Text = "清除分析";
             this.清除分析ToolStripMenuItem.Click += new System.EventHandler(this.清除分析ToolStripMenuItem_Click);
             // 
+            // 分级设色ToolStripMenuItem
+            // 
+            this.分级设色ToolStripMenuItem.Name = "分级设色ToolStripMenuItem";
+            this.分级设色ToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
+            this.分级设色ToolStripMenuItem.Text = "分级设色";
+            this.分级设色ToolStripMenuItem.Click += new System.EventHandler(this.分级设色ToolStripMenuItem_Click);
+            // 
             // 地图整饰ToolStripMenuItem
             // 
             this.地图整饰ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.指北针ToolStripMenuItem,
             this.比例尺ToolStripMenuItem,
             this.图廓ToolStripMenuItem,
-            this.图例ToolStripMenuItem});
+            this.图例ToolStripMenuItem,
+            this.色带ToolStripMenuItem,
+            this.方里网ToolStripMenuItem,
+            this.图名ToolStripMenuItem});
             this.地图整饰ToolStripMenuItem.Name = "地图整饰ToolStripMenuItem";
             this.地图整饰ToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
             this.地图整饰ToolStripMenuItem.Text = "地图整饰";
@@ -387,30 +402,44 @@
             // 指北针ToolStripMenuItem
             // 
             this.指北针ToolStripMenuItem.Name = "指北针ToolStripMenuItem";
-            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.指北针ToolStripMenuItem.Text = "指北针";
             this.指北针ToolStripMenuItem.Click += new System.EventHandler(this.指北针ToolStripMenuItem_Click);
             // 
             // 比例尺ToolStripMenuItem
             // 
             this.比例尺ToolStripMenuItem.Name = "比例尺ToolStripMenuItem";
-            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.比例尺ToolStripMenuItem.Text = "比例尺";
             this.比例尺ToolStripMenuItem.Click += new System.EventHandler(this.比例尺ToolStripMenuItem_Click);
             // 
             // 图廓ToolStripMenuItem
             // 
             this.图廓ToolStripMenuItem.Name = "图廓ToolStripMenuItem";
-            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.图廓ToolStripMenuItem.Text = "图廓";
             this.图廓ToolStripMenuItem.Click += new System.EventHandler(this.图廓ToolStripMenuItem_Click);
             // 
             // 图例ToolStripMenuItem
             // 
             this.图例ToolStripMenuItem.Name = "图例ToolStripMenuItem";
-            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.图例ToolStripMenuItem.Text = "图例";
             this.图例ToolStripMenuItem.Click += new System.EventHandler(this.图例ToolStripMenuItem_Click);
+            // 
+            // 色带ToolStripMenuItem
+            // 
+            this.色带ToolStripMenuItem.Name = "色带ToolStripMenuItem";
+            this.色带ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.色带ToolStripMenuItem.Text = "色带";
+            this.色带ToolStripMenuItem.Click += new System.EventHandler(this.色带ToolStripMenuItem_Click);
+            // 
+            // 方里网ToolStripMenuItem
+            // 
+            this.方里网ToolStripMenuItem.Name = "方里网ToolStripMenuItem";
+            this.方里网ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.方里网ToolStripMenuItem.Text = "方里网";
+            this.方里网ToolStripMenuItem.Click += new System.EventHandler(this.方里网ToolStripMenuItem_Click);
             // 
             // MapExport
             // 
@@ -506,6 +535,7 @@
             this.axPageLayoutControl1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axPageLayoutControl1.OcxState")));
             this.axPageLayoutControl1.Size = new System.Drawing.Size(1161, 779);
             this.axPageLayoutControl1.TabIndex = 8;
+            this.axPageLayoutControl1.OnMouseDown += new ESRI.ArcGIS.Controls.IPageLayoutControlEvents_Ax_OnMouseDownEventHandler(this.axPageLayoutControl1_OnMouseDown);
             // 
             // statusStrip1
             // 
@@ -554,6 +584,13 @@
             this.dataGridView1.RowTemplate.Height = 27;
             this.dataGridView1.Size = new System.Drawing.Size(293, 756);
             this.dataGridView1.TabIndex = 10;
+            // 
+            // 图名ToolStripMenuItem
+            // 
+            this.图名ToolStripMenuItem.Name = "图名ToolStripMenuItem";
+            this.图名ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.图名ToolStripMenuItem.Text = "图名";
+            this.图名ToolStripMenuItem.Click += new System.EventHandler(this.图名ToolStripMenuItem_Click);
             // 
             // MyEngine
             // 
@@ -651,6 +688,10 @@
         private System.Windows.Forms.ToolStripMenuItem 柱状图ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 开始分析ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 清除分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 色带ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 方里网ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 分级设色ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 图名ToolStripMenuItem;
     }
 }
 

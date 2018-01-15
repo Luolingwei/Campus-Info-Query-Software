@@ -159,3 +159,4 @@ C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.Pro
 C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.csproj.GenerateResource.Cache
 C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.exe
 C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.pdb
+C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.frmGraduatedcolors.resources

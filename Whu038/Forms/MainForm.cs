@@ -140,6 +140,8 @@ namespace Whu038
         public IFeatureWorkspace pFWorkspace;
         private EnumChartRenderType _enumChartType = EnumChartRenderType.UnKnown;       
         string path = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+        private OperateMap m_OperateMap = null;
+        public IPoint location = new PointClass();
 
         private void OpenMxd_Click(object sender, EventArgs e)
         {
@@ -292,6 +294,8 @@ namespace Whu038
 
 
         }
+
+
 
         private void axMapControl2_OnMouseMove(object sender, IMapControlEvents2_OnMouseMoveEvent e)
         {
@@ -728,8 +732,9 @@ namespace Whu038
 
         private void 网络分析ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+   
         }
+
 
         //路径分析的实现
         private void SolvePath(string weightName)
@@ -1031,7 +1036,28 @@ namespace Whu038
  
         private void 雷达图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            caozuo = 999;
+            List<string> renderFields = new List<string>();
+            //renderFields.Add("Sheet1$.居民地比例");
+            //renderFields.Add("Sheet1$.人口密度");
+            //renderFields.Add("Sheet1$.平均海拔");
+            //renderFields.Add("Sheet1$.平均坡度");
+            //renderFields.Add("Sheet1$.与公路距离");
+            //renderFields.Add("Sheet1$.坡向离散度");
+            renderFields.Add("地类图斑_新融合.Shape_Area");
+            renderFields.Add("地类图斑_新融合.Shape_Length"); 
+
+            //对应颜色
+            List<IColor> renderColor = new List<IColor>();
+            renderColor.Add(getRGB(10, 200, 10));
+            renderColor.Add(getRGB(50, 20, 10));
+            //renderColor.Add(getRGB(30, 20, 120));
+            //renderColor.Add(getRGB(43, 90, 40));
+            //renderColor.Add(getRGB(140, 10, 50));
+            //renderColor.Add(getRGB(50, 50, 50));
+
+
+            IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
+            creatRadarChart("地类图斑_新融合", renderFields, BgColor, BgColor);
         }
 
         private void 分区柱状图ToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1159,12 +1185,21 @@ namespace Whu038
         {
 
             List<string> renderFields = new List<string>();
-            renderFields.Add("地类图斑_新融合.fenzhi");
-           
+            renderFields.Add("Sheet1$.居民地比例");
+            renderFields.Add("Sheet1$.人口密度");
+            renderFields.Add("Sheet1$.平均海拔");
+            renderFields.Add("Sheet1$.平均坡度");
+            renderFields.Add("Sheet1$.与公路距离");
+            renderFields.Add("Sheet1$.坡向离散度");
+
             //对应颜色
             List<IColor> renderColor = new List<IColor>();
-            renderColor.Add(getRGB(1, 2, 3));
-         
+            renderColor.Add(getRGB(10, 200, 10));
+            renderColor.Add(getRGB(50, 20, 10));
+            renderColor.Add(getRGB(30, 20, 120));
+            renderColor.Add(getRGB(43, 90, 40));
+            renderColor.Add(getRGB(140, 10, 50));
+            renderColor.Add(getRGB(50, 50, 50));
 
             IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
             createBarChart("地类图斑_新融合", renderFields, renderColor, BgColor);
@@ -1643,6 +1678,93 @@ namespace Whu038
             }
         }
 
+        private void 色带ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #region 方里网
+        private void 方里网ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                IActiveView pActiveView = axPageLayoutControl1.ActiveView;
+                IPageLayout pPageLayout = axPageLayoutControl1.PageLayout;
+                DeleteMapGrid(pActiveView, pPageLayout);
+                // CreateGraticuleMapGrid(pActiveView, pPageLayout);
+                CreateMeasuredGrid(pActiveView, pPageLayout);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void DeleteMapGrid(IActiveView pActiveView, IPageLayout pPageLayout)
+        {
+            IMap pMap = pActiveView.FocusMap;
+            IGraphicsContainer graphicsContainer = pPageLayout as IGraphicsContainer;
+            IFrameElement frameElement = graphicsContainer.FindFrame(pMap);
+            IMapFrame mapFrame = frameElement as IMapFrame;
+            IMapGrids mapGrids = null;
+            mapGrids = mapFrame as IMapGrids;
+            if (mapGrids.MapGridCount > 0)
+            {
+                IMapGrid pMapGrid = mapGrids.get_MapGrid(0);
+                mapGrids.DeleteMapGrid(pMapGrid);
+            }
+            pActiveView.PartialRefresh(esriViewDrawPhase.esriViewBackground, null, null);
+        }
+
+        private void AddMeasuredGrid_Click(object sender, EventArgs e)
+        {
+            IActiveView pActiveView = axPageLayoutControl1.ActiveView;
+            IPageLayout pPageLayout = axPageLayoutControl1.PageLayout;
+            DeleteMapGrid(pActiveView, pPageLayout);//删除已存在格网
+            CreateMeasuredGrid(pActiveView, pPageLayout);
+        }
+        public void CreateMeasuredGrid(IActiveView pActiveView, IPageLayout pPageLayout)
+        {
+            IMap map = pActiveView.FocusMap;
+            IMeasuredGrid pMeasuredGrid = new MeasuredGridClass();
+            //设置格网基本属性           
+            pMeasuredGrid.FixedOrigin = true;
+            pMeasuredGrid.Units = map.MapUnits;
+            pMeasuredGrid.XIntervalSize = 1000;//纬度间隔           
+            pMeasuredGrid.YIntervalSize = 1000;//经度间隔.             
+            //设置GridLabel格式
+            IGridLabel pGridLabel = new FormattedGridLabelClass();
+            IFormattedGridLabel pFormattedGridLabel = new FormattedGridLabelClass();
+            INumericFormat pNumericFormat = new NumericFormatClass();
+            pNumericFormat.AlignmentOption = esriNumericAlignmentEnum.esriAlignLeft;
+            pNumericFormat.RoundingOption = esriRoundingOptionEnum.esriRoundNumberOfDecimals;
+            pNumericFormat.RoundingValue = 0;
+            pNumericFormat.ZeroPad = true;
+            pFormattedGridLabel.Format = pNumericFormat as INumberFormat;
+            pGridLabel = pFormattedGridLabel as IGridLabel;
+            StdFont myFont = new stdole.StdFont();
+            myFont.Name = "宋体";
+            myFont.Size = 10;
+            pGridLabel.Font = myFont as IFontDisp;
+            IMapGrid pMapGrid = new MeasuredGridClass();
+            pMapGrid = pMeasuredGrid as IMapGrid;
+            pMapGrid.LabelFormat = pGridLabel;
+            //将格网添加到地图上           
+            IGraphicsContainer graphicsContainer = pPageLayout as IGraphicsContainer;
+            IFrameElement frameElement = graphicsContainer.FindFrame(map);
+            IMapFrame mapFrame = frameElement as IMapFrame;
+            IMapGrids mapGrids = null;
+            mapGrids = mapFrame as IMapGrids;
+            mapGrids.AddMapGrid(pMapGrid);
+            pActiveView.PartialRefresh(esriViewDrawPhase.esriViewBackground, null, null);
+        }
+        #endregion
+
+        private void 图名ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            caozuo = 1;
+        }
+
         private void axPageLayoutControl1_OnMouseMove_1(object sender, IPageLayoutControlEvents_OnMouseMoveEvent e)
         {
             try
@@ -1675,6 +1797,56 @@ namespace Whu038
                     pNewEnvelopeFeedback = null;
                     _enumMapSurType = EnumMapSurroundType.None;
                 }
+            }
+        }
+
+        private void axPageLayoutControl1_OnMouseDown(object sender, IPageLayoutControlEvents_OnMouseDownEvent e)
+        {
+            try
+            {
+                if (caozuo == 1)
+                {
+                    IActiveView pActiveView = null;
+                    pActiveView = axPageLayoutControl1.PageLayout as IActiveView;
+                    m_PointPt = pActiveView.ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
+
+                    IGraphicsContainer pContainer = axPageLayoutControl1.PageLayout as IGraphicsContainer;
+
+                    ITextElement ptext = new TextElementClass();
+                    ptext.Text = "横车镇地表覆盖图";
+                    ITextSymbol pSymbol = new TextSymbolClass();
+                    pSymbol.Size = 30;
+                    ptext.Symbol = pSymbol;
+                    caozuo = 0;
+
+
+                    IElement pEle = ptext as IElement;
+
+                    pEle.Geometry = m_PointPt;
+
+                    pContainer.AddElement(pEle, 0);
+                    pActiveView.PartialRefresh(esriViewDrawPhase.esriViewGraphics, null, null);
+                }
+                if (_enumMapSurType != EnumMapSurroundType.None)
+                {
+                    IActiveView pActiveView = null;
+                    pActiveView = axPageLayoutControl1.PageLayout as IActiveView;
+                    m_PointPt = pActiveView.ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
+                    if (pNewEnvelopeFeedback == null)
+                    {
+                        pNewEnvelopeFeedback = new NewEnvelopeFeedbackClass();
+                        pNewEnvelopeFeedback.Display = pActiveView.ScreenDisplay;
+                        pNewEnvelopeFeedback.Start(m_PointPt);
+                    }
+                    else
+                    {
+                        pNewEnvelopeFeedback.MoveTo(m_PointPt);
+                    }
+
+                }
+            }
+            catch
+            {
             }
         }
 
@@ -1715,6 +1887,7 @@ namespace Whu038
             IMapSurroundFrame pMapSurroundFrame = new MapSurroundFrameClass();
             pMapSurroundFrame.MapFrame = pMapFrame;
             INorthArrow pNorthArrow = new MarkerNorthArrowClass();
+
             pNorthArrow = pStyleGalleryItem.Item as INorthArrow;
             pNorthArrow.Size = pEnv.Width * 50;
             pMapSurroundFrame.MapSurround = (IMapSurround)pNorthArrow;//根据用户的选取，获取相应的MapSurround            
@@ -1802,5 +1975,138 @@ namespace Whu038
 
 
         #endregion
+
+        #region 分级设色
+        private frmGraduatedcolors frmGraduatedcolors = null; // 分级色彩
+        private void 分级设色ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (frmGraduatedcolors == null || frmGraduatedcolors.IsDisposed)
+                {
+                    frmGraduatedcolors = new frmGraduatedcolors();
+
+                    frmGraduatedcolors.Graduatedcolors += new frmGraduatedcolors.GraduatedcolorsEventHandler(frmGraduatedcolors_Graduatedcolors);
+
+                }
+                frmGraduatedcolors.Map = axMapControl1.Map;
+                frmGraduatedcolors.InitUI();
+                frmGraduatedcolors.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        void frmGraduatedcolors_Graduatedcolors(string sFeatClsName, string sFieldName, int numclasses)
+        {
+
+            string a = Convert.ToString(sFieldName), b = Convert.ToString(numclasses), c = Convert.ToString(sFeatClsName);
+            //MessageBox.Show(a + "," + b + "," + c);
+            //MessageBox.Show("1234");
+            IFeatureLayer pFeatLyr = m_OperateMap.GetFeatLyrByName(axMapControl1.Map, sFeatClsName);
+            //MessageBox.Show("234");
+            GraduatedColors(pFeatLyr, sFieldName, numclasses);
+
+        }
+
+        public void GraduatedColors(IFeatureLayer pFeatLyr, string sFieldName, int numclasses)
+        {
+            IGeoFeatureLayer pGeoFeatureL = pFeatLyr as IGeoFeatureLayer;
+            object dataFrequency;
+            object dataValues;
+            bool ok;
+            int breakIndex;
+            //MessageBox.Show("123");
+            ITable pTable = pGeoFeatureL.FeatureClass as ITable;
+            ITableHistogram pTableHistogram = new BasicTableHistogramClass();
+            IBasicHistogram pBasicHistogram = (IBasicHistogram)pTableHistogram;
+            pTableHistogram.Field = sFieldName;
+            pTableHistogram.Table = pTable;
+            pBasicHistogram.GetHistogram(out dataValues, out dataFrequency);     //获取渲染字段的值及其出现的频率
+            IClassifyGEN pClassify = new EqualIntervalClass();
+            try
+            {
+                pClassify.Classify(dataValues, dataFrequency, ref numclasses);  //根据获取字段的值和出现的频率对其进行等级划分 
+            }
+            catch (Exception ex)
+            {
+
+            }
+            //返回一个数组
+            double[] Classes = pClassify.ClassBreaks as double[];
+            int ClassesCount = Classes.GetUpperBound(0);
+            IClassBreaksRenderer pClassBreaksRenderer = new ClassBreaksRendererClass();
+            pClassBreaksRenderer.Field = sFieldName; //设置分级字段
+            pClassBreaksRenderer.BreakCount = ClassesCount; //设置分级数目
+            pClassBreaksRenderer.SortClassesAscending = true;//分级后的图例是否按升级顺序排列
+            //IClassifyGEN接口可以定义不同的分级方法
+            //设置分级着色所需颜色带的起止颜色
+            IHsvColor pFromColor = new HsvColorClass();
+
+            pFromColor.Hue = 151;//
+            pFromColor.Saturation = 10;
+            pFromColor.Value = 96;
+            IHsvColor pToColor = new HsvColorClass();
+            pToColor.Hue = 120;
+            pToColor.Saturation = 35;
+            pToColor.Value = 70;
+            //产生颜色带对象
+            IAlgorithmicColorRamp pAlgorithmicCR = new AlgorithmicColorRampClass();
+            pAlgorithmicCR.Algorithm = esriColorRampAlgorithm.esriHSVAlgorithm;
+            pAlgorithmicCR.FromColor = pFromColor;
+            pAlgorithmicCR.ToColor = pToColor;
+            pAlgorithmicCR.Size = ClassesCount;
+            pAlgorithmicCR.CreateRamp(out ok);
+            //获得颜色
+            IEnumColors pEnumColors = pAlgorithmicCR.Colors;
+            //需要注意的是分级着色对象中的symbol和break的下标都是从0开始
+            for (breakIndex = 0; breakIndex <= ClassesCount - 1; breakIndex++)
+            {
+                IColor pColor = pEnumColors.Next();
+                switch (pGeoFeatureL.FeatureClass.ShapeType)
+                {
+                    case esriGeometryType.esriGeometryPolygon:
+                        {
+                            ISimpleFillSymbol pSimpleFillS = new SimpleFillSymbolClass();
+                            pSimpleFillS.Color = pColor;
+                            pSimpleFillS.Style = esriSimpleFillStyle.esriSFSSolid;
+                            pClassBreaksRenderer.set_Symbol(breakIndex, (ISymbol)pSimpleFillS);//设置填充符号
+                            pClassBreaksRenderer.set_Break(breakIndex, Classes[breakIndex + 1]);//设定每一分级的分级断点
+                            break;
+                        }
+                    case esriGeometryType.esriGeometryPolyline:
+                        {
+                            ISimpleLineSymbol pSimpleLineSymbol = new SimpleLineSymbolClass();
+                            pSimpleLineSymbol.Color = pColor;
+                            pClassBreaksRenderer.set_Symbol(breakIndex, (ISymbol)pSimpleLineSymbol);
+                            pClassBreaksRenderer.set_Break(breakIndex, Classes[breakIndex + 1]);
+                            break;
+                        }
+                    case esriGeometryType.esriGeometryPoint:
+                        {
+                            ISimpleMarkerSymbol pSimpleMarkerSymbol = new SimpleMarkerSymbolClass();
+                            pSimpleMarkerSymbol.Color = pColor;
+                            pClassBreaksRenderer.set_Symbol(breakIndex, (ISymbol)pSimpleMarkerSymbol);//设置填充符号
+                            pClassBreaksRenderer.set_Break(breakIndex, Classes[breakIndex + 1]);//设定每一分级的分级断点
+                            break;
+                        }
+                }
+            }
+            pGeoFeatureL.Renderer = (IFeatureRenderer)pClassBreaksRenderer;
+            axMapControl1.Refresh();
+            axTOCControl1.Update();
+        }
+
+
+
+
+
+
+
+        #endregion
+
+  
     }
 }
