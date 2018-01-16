@@ -846,7 +846,7 @@ namespace Whu038
 
         private void MyEngine_Load(object sender, EventArgs e)
         {
-            axMapControl1.LoadMxFile(@"C:\Users\asus\Desktop\GIS实习\实习二\LLW2.mxd");
+            //axMapControl1.LoadMxFile(@"C:\Users\asus\Desktop\GIS实习\实习二\LLW2.mxd");
             axMapControl1.Refresh();
 
             /*
@@ -1037,150 +1037,16 @@ namespace Whu038
         private void 雷达图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> renderFields = new List<string>();
-            //renderFields.Add("Sheet1$.居民地比例");
-            //renderFields.Add("Sheet1$.人口密度");
-            //renderFields.Add("Sheet1$.平均海拔");
-            //renderFields.Add("Sheet1$.平均坡度");
-            //renderFields.Add("Sheet1$.与公路距离");
-            //renderFields.Add("Sheet1$.坡向离散度");
-            renderFields.Add("地类图斑_新融合.Shape_Area");
-            renderFields.Add("地类图斑_新融合.Shape_Length"); 
-
-            //对应颜色
-            List<IColor> renderColor = new List<IColor>();
-            renderColor.Add(getRGB(10, 200, 10));
-            renderColor.Add(getRGB(50, 20, 10));
-            //renderColor.Add(getRGB(30, 20, 120));
-            //renderColor.Add(getRGB(43, 90, 40));
-            //renderColor.Add(getRGB(140, 10, 50));
-            //renderColor.Add(getRGB(50, 50, 50));
-
+            renderFields.Add("Sheet1$.平均海拔");
+            renderFields.Add("Sheet1$.平均坡度");
+            renderFields.Add("Sheet1$.与公路距离");
+            renderFields.Add("Sheet1$.坡向离散度");
+            renderFields.Add("地类图斑_新融合.Shape_Area"); 
 
             IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
             creatRadarChart("地类图斑_新融合", renderFields, BgColor, BgColor);
         }
-
-        private void 分区柱状图ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            ArrayList DataStored = new ArrayList();
-            ArrayList DataMax = new ArrayList();
-            //MessageBox.Show("未能找到有效路径" + statisticqu.DataStore[0], "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
-            string path = "D:\\data.txt";
-            StreamReader sr = new StreamReader(path, Encoding.UTF8);
-            String line;
-            while ((line = sr.ReadLine()) != null)
-            {
-                string[] sArray = line.Split(',');
-                Datad data = new Datad();
-                data.qs = sArray[0];
-                //MessageBox.Show("未能找到有效路径" + data.qs, "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
-                data.fenzhi = double.Parse(sArray[1]);
-
-                DataStored.Add(data);
-                DataMax.Add(data.fenzhi);
-            }
-            //获取定位点
-            //MapControl中没有图层时返回 
-            if (axMapControl1.LayerCount <= 0)
-                return;
-            //获取MapControl中的全部图层名称，并加入ComboBox 
-            //图层 
-            ILayer pLayer;
-            int index = 0;
-            //图层名称 
-            string strLayerName;
-            for (int i = 0; i < axMapControl1.LayerCount; i++)
-            {
-                pLayer = axMapControl1.get_Layer(i);
-                strLayerName = pLayer.Name;
-                if (strLayerName == "地类图斑_新融合")
-                {
-                    index = i;
-                }
-            }
-            //获取地类图斑图层所有属性数据
-            IFeatureLayer mFeatureLayer;
-            //根据所选择的图层查询得到的特征类
-            IFeatureClass pFeatureClass = null;
-            mFeatureLayer = axMapControl1.get_Layer(index) as IFeatureLayer;
-            pFeatureClass = mFeatureLayer.FeatureClass;
-
-            //绘制矩形，注意最大值的判断
-            DataMax.Sort();
-            DataMax.Reverse();
-            for (int i = 0; i < DataStored.Count; i++)
-            {
-                Datad a = DataStored[i] as Datad;
-                //获取定位点
-                //MessageBox.Show("未能找到有效路径" + a.qs, "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning); 
-                Double x = new double();
-                Double y = new double();
-                index = pFeatureClass.Fields.FindField("Sheet1$.总分值");
-                IQueryFilter pQueryFilter = new QueryFilterClass();
-                pQueryFilter.SubFields = "Sheet1$.总分值";
-                pQueryFilter.WhereClause = "地类图斑_新融合.name='" + a.qs + "'";
-                IFeatureCursor featureCursor;
-                featureCursor = pFeatureClass.Search(pQueryFilter, false);
-                IFeature pFeature;
-                pFeature = featureCursor.NextFeature();
-                x = Double.Parse(pFeature.get_Value(index).ToString());
-
-
-                //index = pFeatureClass.Fields.FindField("y");
-                //pQueryFilter.SubFields = "y";
-                //pQueryFilter.WhereClause = "权属名称='" + a.qs + "'";
-                //featureCursor = pFeatureClass.Search(pQueryFilter, false);
-                //pFeature = featureCursor.NextFeature();
-                //y = Double.Parse(pFeature.get_Value(index).ToString());
-
-                //画图啦
-                IMap pMap;
-                IActiveView pActiveView;
-                pMap = axMapControl1.Map;
-                pActiveView = pMap as IActiveView;
-
-                ISegmentCollection pSegColl = new RingClass();
-                ILine pLine = new LineClass();
-                IPoint p1 = new PointClass();
-                p1.PutCoords(x, y);
-                IPoint p2 = new PointClass();
-                p2.PutCoords(x + 300, y);
-                double h = a.fenzhi * 1200 / double.Parse(DataMax[0].ToString());
-                IPoint p3 = new PointClass();
-                p3.PutCoords(x + 300, y + h);
-                IPoint p4 = new PointClass();
-                p4.PutCoords(x, y + h);
-                pLine.PutCoords(p1, p2);
-                object Missing1 = Type.Missing;
-                object Missing2 = Type.Missing;
-                pSegColl.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
-                pLine = new LineClass();
-                pLine.PutCoords(p2, p3);
-                pSegColl.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
-                pLine = new LineClass();
-                pLine.PutCoords(p3, p4);
-                pSegColl.AddSegment(pLine as ISegment, ref Missing1, ref Missing2);
-                IRing pRing = pSegColl as IRing;
-                pRing.Close();
-                IGeometryCollection pPolygon = new PolygonClass();
-                pPolygon.AddGeometry(pRing, ref Missing1, ref Missing2);
-                ISimpleFillSymbol pSimpleFillsym = new SimpleFillSymbolClass();
-                pSimpleFillsym.Style = esriSimpleFillStyle.esriSFSSolid;
-                IRgbColor rGBColor = new RgbColorClass();
-                rGBColor.Red = 191;
-                rGBColor.Green = 255;
-                rGBColor.Blue = 255;
-                pSimpleFillsym.Color = rGBColor;
-                IFillShapeElement pPolygonEle = new PolygonElementClass();
-                pPolygonEle.Symbol = pSimpleFillsym;
-                IElement pEle = pPolygonEle as IElement;
-                pEle.Geometry = (IGeometry)pPolygon;
-                IGraphicsContainer pContainer = pMap as IGraphicsContainer;
-                pContainer.AddElement(pEle, 0);
-
-            }
-    }
-
+                
         private void 柱状图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -1205,6 +1071,7 @@ namespace Whu038
             createBarChart("地类图斑_新融合", renderFields, renderColor, BgColor);
                       
         }
+
         private void 饼状图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> renderFields = new List<string>();            
@@ -1232,13 +1099,7 @@ namespace Whu038
 
 
 
-        /*添加柱状图
-        * @layerName图层名
-        * @renderFields字段
-        * @alias别名
-        * @renderColor对应的填充颜色
-        * @BgColor地图填充色
-        */
+        //添加柱状图      
         public void createBarChart(string layerName, List<string> renderFields, List<IColor> renderColor, IColor BgColor, List<string> alias = null)
         {
             IGeoFeatureLayer geoFeatureLayer;
@@ -1319,13 +1180,7 @@ namespace Whu038
             axTOCControl1.Update();
         }
 
-
-        /*添加饼状图
-         * @layerName要图层名
-         * @renderFields字段
-        * @renderColor对应的填充颜色
-         * @BgColor地图填充色
-         */
+        //添加饼状图      
         public void createPieChart(string layerName, List<string> renderFields, List<IColor> renderColor, IColor BgColor)
         {
             IGeoFeatureLayer geoFeatureLayer;
@@ -1398,15 +1253,8 @@ namespace Whu038
             pActiveView.Refresh();
             axTOCControl1.Update();
         }
-        
-        
-        
-        /*添加雷达图
-        * @layerName图层名
-        * @renderFields字段
-        * @renderColor线条颜色
-        * @BgColor雷达图背景色
-        */
+                        
+        //添加雷达图
         public void creatRadarChart(string layerName, List<string> renderFields, IColor renderColor, IColor BgColor)
         {
             IGeoFeatureLayer geoFeatureLayer;
@@ -1678,11 +1526,6 @@ namespace Whu038
             }
         }
 
-        private void 色带ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         #region 方里网
         private void 方里网ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1792,8 +1635,7 @@ namespace Whu038
             {
                 if (pNewEnvelopeFeedback != null)
                 {
-                    IActiveView pActiveView = null;
-                    pActiveView = axPageLayoutControl1.PageLayout as IActiveView;
+                    IActiveView pActiveView = axPageLayoutControl1.PageLayout as IActiveView;
                     IEnvelope pEnvelope = pNewEnvelopeFeedback.Stop();
                     AddMapSurround(pActiveView, _enumMapSurType, pEnvelope);
                     pNewEnvelopeFeedback = null;
@@ -1865,7 +1707,7 @@ namespace Whu038
                         makeScaleBar(pAV, axPageLayoutControl1.PageLayout, pEnvelope);
                         break;
                     case EnumMapSurroundType.Legend:
-                        MakeLegend(pAV, axPageLayoutControl1.PageLayout, pEnvelope);
+                        AddLegend(axPageLayoutControl1.PageLayout, pEnvelope);
                         break;
                 }
             }
@@ -1932,24 +1774,29 @@ namespace Whu038
         }
 
         //图例
-        private void MakeLegend(IActiveView pActiveView, IPageLayout pPageLayout, IEnvelope pEnv)
+        public void AddLegend(IPageLayout pageLayout, IEnvelope pEnv)
         {
+            IActiveView pActiveView = pageLayout as IActiveView;
+            IGraphicsContainer container = pageLayout as IGraphicsContainer;
+            //获得MapFrame
+            IMapFrame pMapFrame = container.FindFrame(pActiveView.FocusMap) as IMapFrame;
+
+            //根据MapSurround的uid，创建相应的MapSurroundFrame和MapSurround  
             UID pID = new UID();
             pID.Value = "esriCarto.Legend";
-            IGraphicsContainer pGraphicsContainer = pPageLayout as IGraphicsContainer;
-            IMapFrame pMapFrame = pGraphicsContainer.FindFrame(pActiveView.FocusMap) as IMapFrame;
             IMapSurroundFrame pMapSurroundFrame = pMapFrame.CreateSurroundFrame(pID, null);//根据唯一标示符，创建与之对应MapSurroundFrame
+
+            //如果已经存在图例，删除已经存在的图例
             IElement pDeletElement = axPageLayoutControl1.FindElementByName("Legend");//获取PageLayout中的图例元素
             if (pDeletElement != null)
-            {
-                pGraphicsContainer.DeleteElement(pDeletElement);  //如果已经存在图例，删除已经存在的图例
-            }
+                container.DeleteElement(pDeletElement);
+
             //设置MapSurroundFrame背景
             ISymbolBackground pSymbolBackground = new SymbolBackgroundClass();
-            IFillSymbol pFillSymbol = new SimpleFillSymbolClass();
             ILineSymbol pLineSymbol = new SimpleLineSymbolClass();
-            pLineSymbol.Color = m_OperatePageLayout.GetRgbColor(0, 0, 0);
-            pFillSymbol.Color = m_OperatePageLayout.GetRgbColor(240, 240, 240);
+            pLineSymbol.Color = getRGB(0, 0, 0);
+            IFillSymbol pFillSymbol = new SimpleFillSymbolClass();
+            pFillSymbol.Color = getRGB(240, 240, 240);
             pFillSymbol.Outline = pLineSymbol;
             pSymbolBackground.FillSymbol = pFillSymbol;
             pMapSurroundFrame.Background = pSymbolBackground;
@@ -1960,20 +1807,51 @@ namespace Whu038
             ILegend pLegend = pMapSurround as ILegend;
             pLegend.ClearItems();
             pLegend.Title = "图例";
+
             for (int i = 0; i < pActiveView.FocusMap.LayerCount; i++)
             {
-                ILegendItem pLegendItem = new HorizontalLegendItemClass();
-                pLegendItem.Layer = pActiveView.FocusMap.get_Layer(i);//获取添加图例关联图层             
-                pLegendItem.ShowDescriptions = false;
-                pLegendItem.Columns = 1;
-                pLegendItem.ShowHeading = true;
-                pLegendItem.ShowLabels = true;
-                pLegend.AddItem(pLegendItem);//添加图例内容
+                ILayer pLayer = pActiveView.FocusMap.get_Layer(i);
+                if (pLayer.Visible == true)
+                {
+                    if (pLayer is IGroupLayer || pLayer is ICompositeLayer)
+                    {
+                        ICompositeLayer pCompositeLayer = (ICompositeLayer)pLayer;
+                        for (int j = pCompositeLayer.Count - 1; j >= 0; j--)
+                        {
+                            ILayer pSubLayer = pCompositeLayer.get_Layer(j);
+                            ILegendItem pItem = SetItemStyle(pSubLayer);
+                            pLegend.AddItem(pItem);//添加图例内容
+                        }
+                    }
+                    else
+                    {
+                        ILegendItem pItem = SetItemStyle(pLayer);
+                        pLegend.AddItem(pItem);//添加图例内容
+                    }
+                }
             }
-            pGraphicsContainer.AddElement(pElement, 0);
-            pActiveView.PartialRefresh(esriViewDrawPhase.esriViewGraphics, null, null);
 
+            container.AddElement(pElement, 0);
+            pActiveView.PartialRefresh(esriViewDrawPhase.esriViewGraphics, null, null);
         }
+        private ILegendItem SetItemStyle(ILayer layer)
+        {
+            IFontDisp myFont = new StdFont() { Name = "宋体", Size = 10, Weight = 10 } as IFontDisp;
+
+            ITextSymbol txtSymbol = new TextSymbolClass();
+            txtSymbol.Font = myFont;
+
+            ILegendItem pLegendItem = new HorizontalLegendItemClass();
+            pLegendItem.Layer = layer;//获取添加图例关联图层             
+            pLegendItem.ShowDescriptions = false;
+            pLegendItem.Columns = 3;
+            pLegendItem.LayerNameSymbol = txtSymbol;
+            pLegendItem.ShowHeading = true;
+            pLegendItem.ShowLabels = true;
+
+            return pLegendItem;
+        }
+
 
 
         #endregion

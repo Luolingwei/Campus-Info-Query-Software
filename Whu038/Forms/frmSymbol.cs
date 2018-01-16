@@ -73,7 +73,9 @@ namespace Whu038
             this.Close();
         }
 
-        private void SymbologyCtrl_OnMouseDown(object sender, ISymbologyControlEvents_OnMouseDownEvent e)
+    
+
+        private void SymbologyCtrl_OnMouseDown_1(object sender, ISymbologyControlEvents_OnMouseDownEvent e)
         {
             pStyleGalleryItem = SymbologyCtrl.HitTest(e.x, e.y);//用户选择需要符号 
         }

@@ -43,6 +43,7 @@
             this.SymbologyCtrl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("SymbologyCtrl.OcxState")));
             this.SymbologyCtrl.Size = new System.Drawing.Size(374, 289);
             this.SymbologyCtrl.TabIndex = 1;
+            this.SymbologyCtrl.OnMouseDown += new ESRI.ArcGIS.Controls.ISymbologyControlEvents_Ax_OnMouseDownEventHandler(this.SymbologyCtrl_OnMouseDown_1);
             // 
             // button1
             // 
