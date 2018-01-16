@@ -48,9 +48,10 @@
             this.menuPan = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFullExtent = new System.Windows.Forms.ToolStripMenuItem();
             this.属性查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ChooseItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.缓冲区分袖ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.位置查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.选择查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.框选查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.附近查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Statistic = new System.Windows.Forms.ToolStripMenuItem();
             this.选择统计ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.专题图表ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -150,9 +151,6 @@
             this.fileToolStripMenuItem,
             this.toolStripMenuItem1,
             this.属性查询ToolStripMenuItem,
-            this.ChooseItem,
-            this.信息查询ToolStripMenuItem,
-            this.缓冲区分袖ToolStripMenuItem,
             this.Statistic,
             this.网络分析ToolStripMenuItem,
             this.分级设色ToolStripMenuItem,
@@ -261,32 +259,42 @@
             // 
             // 属性查询ToolStripMenuItem
             // 
+            this.属性查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.位置查询ToolStripMenuItem,
+            this.选择查询ToolStripMenuItem,
+            this.框选查询ToolStripMenuItem,
+            this.附近查询ToolStripMenuItem});
             this.属性查询ToolStripMenuItem.Name = "属性查询ToolStripMenuItem";
             this.属性查询ToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
-            this.属性查询ToolStripMenuItem.Text = "&位置查询";
-            this.属性查询ToolStripMenuItem.Click += new System.EventHandler(this.属性查询ToolStripMenuItem_Click);
+            this.属性查询ToolStripMenuItem.Text = "&空间查询";
             // 
-            // ChooseItem
+            // 位置查询ToolStripMenuItem
             // 
-            this.ChooseItem.Name = "ChooseItem";
-            this.ChooseItem.Size = new System.Drawing.Size(81, 24);
-            this.ChooseItem.Text = "&选择查询";
-            this.ChooseItem.Click += new System.EventHandler(this.ChooseItem_Click);
-            this.ChooseItem.DoubleClick += new System.EventHandler(this.ChooseItem_DoubleClick);
+            this.位置查询ToolStripMenuItem.Name = "位置查询ToolStripMenuItem";
+            this.位置查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.位置查询ToolStripMenuItem.Text = "位置查询";
+            this.位置查询ToolStripMenuItem.Click += new System.EventHandler(this.位置查询ToolStripMenuItem_Click);
             // 
-            // 信息查询ToolStripMenuItem
+            // 选择查询ToolStripMenuItem
             // 
-            this.信息查询ToolStripMenuItem.Name = "信息查询ToolStripMenuItem";
-            this.信息查询ToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
-            this.信息查询ToolStripMenuItem.Text = "&框选查询";
-            this.信息查询ToolStripMenuItem.Click += new System.EventHandler(this.信息查询ToolStripMenuItem_Click);
+            this.选择查询ToolStripMenuItem.Name = "选择查询ToolStripMenuItem";
+            this.选择查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.选择查询ToolStripMenuItem.Text = "选择查询";
+            this.选择查询ToolStripMenuItem.Click += new System.EventHandler(this.选择查询ToolStripMenuItem_Click);
             // 
-            // 缓冲区分袖ToolStripMenuItem
+            // 框选查询ToolStripMenuItem
             // 
-            this.缓冲区分袖ToolStripMenuItem.Name = "缓冲区分袖ToolStripMenuItem";
-            this.缓冲区分袖ToolStripMenuItem.Size = new System.Drawing.Size(51, 24);
-            this.缓冲区分袖ToolStripMenuItem.Text = "&附近";
-            this.缓冲区分袖ToolStripMenuItem.Click += new System.EventHandler(this.缓冲区分袖ToolStripMenuItem_Click);
+            this.框选查询ToolStripMenuItem.Name = "框选查询ToolStripMenuItem";
+            this.框选查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.框选查询ToolStripMenuItem.Text = "框选查询";
+            this.框选查询ToolStripMenuItem.Click += new System.EventHandler(this.框选查询ToolStripMenuItem_Click);
+            // 
+            // 附近查询ToolStripMenuItem
+            // 
+            this.附近查询ToolStripMenuItem.Name = "附近查询ToolStripMenuItem";
+            this.附近查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.附近查询ToolStripMenuItem.Text = "附近查询";
+            this.附近查询ToolStripMenuItem.Click += new System.EventHandler(this.附近查询ToolStripMenuItem_Click);
             // 
             // Statistic
             // 
@@ -295,8 +303,8 @@
             this.专题图表ToolStripMenuItem,
             this.自动生成ToolStripMenuItem});
             this.Statistic.Name = "Statistic";
-            this.Statistic.Size = new System.Drawing.Size(51, 24);
-            this.Statistic.Text = "&统计";
+            this.Statistic.Size = new System.Drawing.Size(81, 24);
+            this.Statistic.Text = "&空间统计";
             this.Statistic.Click += new System.EventHandler(this.Statistic_Click);
             // 
             // 选择统计ToolStripMenuItem
@@ -317,7 +325,7 @@
             // 雷达图ToolStripMenuItem
             // 
             this.雷达图ToolStripMenuItem.Name = "雷达图ToolStripMenuItem";
-            this.雷达图ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.雷达图ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.雷达图ToolStripMenuItem.Text = "雷达图";
             this.雷达图ToolStripMenuItem.Click += new System.EventHandler(this.雷达图ToolStripMenuItem_Click);
             // 
@@ -391,42 +399,42 @@
             // 指北针ToolStripMenuItem
             // 
             this.指北针ToolStripMenuItem.Name = "指北针ToolStripMenuItem";
-            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.指北针ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.指北针ToolStripMenuItem.Text = "指北针";
             this.指北针ToolStripMenuItem.Click += new System.EventHandler(this.指北针ToolStripMenuItem_Click);
             // 
             // 比例尺ToolStripMenuItem
             // 
             this.比例尺ToolStripMenuItem.Name = "比例尺ToolStripMenuItem";
-            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.比例尺ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.比例尺ToolStripMenuItem.Text = "比例尺";
             this.比例尺ToolStripMenuItem.Click += new System.EventHandler(this.比例尺ToolStripMenuItem_Click);
             // 
             // 图廓ToolStripMenuItem
             // 
             this.图廓ToolStripMenuItem.Name = "图廓ToolStripMenuItem";
-            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.图廓ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.图廓ToolStripMenuItem.Text = "图廓";
             this.图廓ToolStripMenuItem.Click += new System.EventHandler(this.图廓ToolStripMenuItem_Click);
             // 
             // 图例ToolStripMenuItem
             // 
             this.图例ToolStripMenuItem.Name = "图例ToolStripMenuItem";
-            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.图例ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.图例ToolStripMenuItem.Text = "图例";
             this.图例ToolStripMenuItem.Click += new System.EventHandler(this.图例ToolStripMenuItem_Click);
             // 
             // 方里网ToolStripMenuItem
             // 
             this.方里网ToolStripMenuItem.Name = "方里网ToolStripMenuItem";
-            this.方里网ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.方里网ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.方里网ToolStripMenuItem.Text = "方里网";
             this.方里网ToolStripMenuItem.Click += new System.EventHandler(this.方里网ToolStripMenuItem_Click);
             // 
             // 图名ToolStripMenuItem
             // 
             this.图名ToolStripMenuItem.Name = "图名ToolStripMenuItem";
-            this.图名ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.图名ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
             this.图名ToolStripMenuItem.Text = "图名";
             this.图名ToolStripMenuItem.Click += new System.EventHandler(this.图名ToolStripMenuItem_Click);
             // 
@@ -651,13 +659,10 @@
         private System.Windows.Forms.ToolStripMenuItem 属性查询ToolStripMenuItem;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ToolStripMenuItem 网络分析ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 缓冲区分袖ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 关于软件ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 信息查询ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem MapExport;
         private System.Windows.Forms.ToolStripMenuItem Statistic;
-        private System.Windows.Forms.ToolStripMenuItem ChooseItem;
         private System.Windows.Forms.ToolStripMenuItem 地图整饰ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 指北针ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 比例尺ToolStripMenuItem;
@@ -674,6 +679,10 @@
         private System.Windows.Forms.ToolStripMenuItem 方里网ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 分级设色ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 图名ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 位置查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 选择查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 框选查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 附近查询ToolStripMenuItem;
     }
 }
 

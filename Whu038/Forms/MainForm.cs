@@ -602,8 +602,8 @@ namespace Whu038
                 pan.OnMouseUp(e.button, e.shift, e.x, e.y);
 
         }
-
-        private void 属性查询ToolStripMenuItem_Click(object sender, EventArgs e)
+         
+        private void 位置查询ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LocationQueryForm frmattributequery = new LocationQueryForm(this.axMapControl1);
             frmattributequery.Show();
@@ -972,21 +972,19 @@ namespace Whu038
             mPointCollection = null;
         }
 
-
-        private void 缓冲区分袖ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 附近查询ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             NearbyForm BufferAnalysis = new NearbyForm(this, axMapControl1);
             BufferAnalysis.Show();
         }
-
+     
         private void 关于软件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HelpForm Help = new HelpForm();
             Help.Show();
         }
 
-        private void 信息查询ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 框选查询ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //初始化空间查询窗体
             BoxSelectionQueryForm spatialQueryForm = new BoxSelectionQueryForm(this.axMapControl1);
@@ -1008,8 +1006,8 @@ namespace Whu038
             map.GetGeometry=axMapControl1.ActiveView.Extent;
             map.Show(); 
         }
-
-        private void ChooseItem_Click(object sender, EventArgs e)
+            
+        private void 选择查询ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.mTool = "ChooseQuery";
             m_MapView = new MapView(axMapControl1);
@@ -1978,6 +1976,10 @@ namespace Whu038
             axMapControl1.Refresh();
             axTOCControl1.Update();
         }
+
+
+
+
 
 
 
