@@ -1,4 +1,5 @@
 ﻿using System;
+using ESRI.ArcGIS.Geometry;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.DataSourcesGDB;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.DataSourcesFile;
+using ESRI.ArcGIS.Carto;
 
 namespace Whu038.Forms
 {
@@ -66,6 +74,7 @@ namespace Whu038.Forms
             }
         }
 
+        public AxMapControl mapControl { get; set; }
         private void button3_Click(object sender, EventArgs e)
         {
             QZ quanzhong;
@@ -96,7 +105,7 @@ namespace Whu038.Forms
                     {
                         quanzhong.PD = Convert.ToDouble(item.SubItems[1].Text);
                     }
-                    if (item.SubItems[0].Text == "坡度与公路距离")
+                    if (item.SubItems[0].Text == "与公路距离")
                     {
                         quanzhong.JL = Convert.ToDouble(item.SubItems[1].Text);
                     }
@@ -107,7 +116,45 @@ namespace Whu038.Forms
 
                 }
             }
+
+            IFeatureLayer featureLayer = mapControl.get_Layer(17) as IFeatureLayer;
+            string n = featureLayer.Name;
+            IFeatureClass featureClass = featureLayer.FeatureClass;
+
+            IQueryFilter queryFilter = new QueryFilterClass();
+            IFeatureCursor featureCursor = featureClass.Update(queryFilter, true);
+
+            int MDIndex = featureCursor.FindField("人口密度");
+            int BLIndex = featureCursor.FindField("居民地比例");
+            int HBIndex = featureCursor.FindField("平均海拔");
+            int PDIndex = featureCursor.FindField("平均坡度");
+            int JLIndex = featureCursor.FindField("与公路距离");
+            int LSIndex = featureCursor.FindField("坡向离散度");            
+            int scoreIndex = featureCursor.FindField("总分值");
+
+
+
+            IFeature feature = featureCursor.NextFeature();
+            while (feature != null)
+            {
+
+                double MD_t = Convert.ToDouble(feature.get_Value(MDIndex));
+                double BL_t = Convert.ToDouble(feature.get_Value(BLIndex));
+                double HB_t = Convert.ToDouble(feature.get_Value(HBIndex));
+                double PD_t = Convert.ToDouble(feature.get_Value(PDIndex));
+                double JL_t = Convert.ToDouble(feature.get_Value(JLIndex));
+                double LS_t = Convert.ToDouble(feature.get_Value(LSIndex));
+
+
+                double totalScore = quanzhong.MD * MD_t + quanzhong.BL * BL_t + quanzhong.HB * HB_t+ quanzhong.PD * PD_t + quanzhong.JL * JL_t + quanzhong.LS * LS_t;
+
+                feature.set_Value(scoreIndex, totalScore);
+                featureCursor.UpdateFeature(feature);
+                feature = featureCursor.NextFeature();
+                featureCursor.UpdateFeature(feature);
+                feature = featureCursor.NextFeature();
+
+            }
         }
     }
 }
-    
