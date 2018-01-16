@@ -160,3 +160,4 @@ C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.csp
 C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.exe
 C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.pdb
 C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.frmGraduatedcolors.resources
+C:\Users\asus\Desktop\GIS实习\实习三\Whu038\Whu038\obj\x86\Debug\Whu038.Forms.QianLiFenXi.resources

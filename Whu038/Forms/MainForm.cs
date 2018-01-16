@@ -1983,21 +1983,16 @@ namespace Whu038
             axMapControl1.Refresh();
             axTOCControl1.Update();
         }
+        #endregion
 
-
-
-
-
-
-
-
-
-
-
-
+        #region 拆旧潜力分析
+        private void 拆旧潜力分析ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            QianLiFenXi frmqianlifenxi = new QianLiFenXi();
+            frmqianlifenxi.Show();
+        }
 
         #endregion
 
- 
     }
 }
