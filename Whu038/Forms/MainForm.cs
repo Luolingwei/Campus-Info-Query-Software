@@ -1050,12 +1050,12 @@ namespace Whu038
         {
 
             List<string> renderFields = new List<string>();
-            renderFields.Add("Sheet1$.居民地比例");
-            renderFields.Add("Sheet1$.人口密度");
-            renderFields.Add("Sheet1$.平均海拔");
-            renderFields.Add("Sheet1$.平均坡度");
-            renderFields.Add("Sheet1$.与公路距离");
-            renderFields.Add("Sheet1$.坡向离散度");
+            renderFields.Add("人口密度");
+            renderFields.Add("居民地比例");
+            renderFields.Add("平均海拔");
+            renderFields.Add("平均坡度");
+            renderFields.Add("与公路距离");
+            renderFields.Add("坡向离散度");
 
             //对应颜色
             List<IColor> renderColor = new List<IColor>();
@@ -1067,19 +1067,19 @@ namespace Whu038
             renderColor.Add(getRGB(50, 50, 50));
 
             IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
-            createBarChart("地类图斑_新融合", renderFields, renderColor, BgColor);
+            createBarChart("地类图斑A", renderFields, renderColor, BgColor);
                       
         }
 
         private void 饼状图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            List<string> renderFields = new List<string>();            
-            renderFields.Add("Sheet1$.居民地比例"); 
-            renderFields.Add("Sheet1$.人口密度");
-            renderFields.Add("Sheet1$.平均海拔");
-            renderFields.Add("Sheet1$.平均坡度");
-            renderFields.Add("Sheet1$.与公路距离");
-            renderFields.Add("Sheet1$.坡向离散度");
+            List<string> renderFields = new List<string>();
+            renderFields.Add("人口密度");
+            renderFields.Add("居民地比例");
+            renderFields.Add("平均海拔");
+            renderFields.Add("平均坡度");
+            renderFields.Add("与公路距离");
+            renderFields.Add("坡向离散度");
 
             //对应颜色
             List<IColor> renderColor = new List<IColor>();
@@ -1092,7 +1092,7 @@ namespace Whu038
 
 
             IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
-            createPieChart("地类图斑_新融合", renderFields, renderColor, BgColor);
+            createPieChart("地类图斑A", renderFields, renderColor, BgColor);
         }
 
 
@@ -1172,7 +1172,7 @@ namespace Whu038
             //创建图例  
             chartRenderer.CreateLegend();
             geoFeatureLayer.Renderer = chartRenderer as IFeatureRenderer;
-            geoFeatureLayer.DisplayField = "地类图斑_新融合.OBJECTID";
+            geoFeatureLayer.DisplayField = "OBJECTID";
 
             IActiveView pActiveView = axMapControl1.Map as IActiveView;
             pActiveView.Refresh();
