@@ -11,6 +11,9 @@ using ESRI.ArcGIS.Carto;
 using Whu038;
 using Whu038.Classes;
 using Whu038.Forms;
+using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Display;
 
 namespace Whu038
 {
@@ -29,6 +32,8 @@ namespace Whu038
             get { return _map; }
             set { _map = value; }
         }
+        AxMapControl mapControl;
+        AxTOCControl tocControl;
         public void InitUI()
         {
             string sClsName = string.Empty;
@@ -45,6 +50,11 @@ namespace Whu038
                     cmbSelLyr.Items.Add(sClsName);
                 }
             }
+        }
+        public void GetMap(AxMapControl mapControl,AxTOCControl tocControl)
+        {
+            this.mapControl = mapControl;
+            this.tocControl = tocControl;
         }
         private bool check()
         {
@@ -79,22 +89,83 @@ namespace Whu038
             return pFeatCls;
         }
 
+        void ClassifyColor()
+        {
+            IGeoFeatureLayer geoFeatureLayer = mapControl.Map.get_Layer(17) as IGeoFeatureLayer;
+            string a = geoFeatureLayer.Name;
+            object dataFrequency, dataValues;
 
+
+            ITableHistogram tableHistogram = new BasicTableHistogramClass();
+            IBasicHistogram basicHistogram = (IBasicHistogram)tableHistogram;
+            tableHistogram.Field = cmbSelField.Text;
+            tableHistogram.Table = geoFeatureLayer.FeatureClass as ITable;
+
+
+
+            basicHistogram.GetHistogram(out dataValues, out dataFrequency);
+            IClassifyGEN classifyGEN = new EqualIntervalClass();
+            classifyGEN.Classify(dataValues, dataFrequency, Convert.ToInt32(cmbnumclasses.Text));
+
+
+            double[] classes = classifyGEN.ClassBreaks as double[];
+            int classesCount = classes.GetUpperBound(0);
+            IClassBreaksRenderer classBreaksRenderer = new ClassBreaksRendererClass();
+
+
+
+            classBreaksRenderer.Field = cmbSelField.Text;
+            classBreaksRenderer.BreakCount = classesCount;
+            classBreaksRenderer.SortClassesAscending = true;
+
+
+
+            IHsvColor fromColor = new HsvColorClass();
+            fromColor.Hue = 0; fromColor.Saturation = 50;
+            fromColor.Value = 96;
+            IHsvColor toColor = new HsvColorClass();
+            toColor.Hue = 80;
+            toColor.Saturation = 100;
+            toColor.Value = 96;
+            bool ok;
+
+
+
+            //产生色带
+            IAlgorithmicColorRamp algorithmicCR = new AlgorithmicColorRampClass();
+            algorithmicCR.Algorithm = esriColorRampAlgorithm.esriHSVAlgorithm;
+            algorithmicCR.FromColor = fromColor;
+            algorithmicCR.ToColor = toColor;
+            algorithmicCR.Size = classesCount;
+            algorithmicCR.CreateRamp(out ok);
+
+
+
+            //获得颜色
+            IEnumColors enumColors = algorithmicCR.Colors;
+            for (int breakIndex = 0; breakIndex <= classesCount - 1; breakIndex++)
+            {
+                IColor color = enumColors.Next();
+                ISimpleFillSymbol simpleFill = new SimpleFillSymbolClass();
+                simpleFill.Color = color;
+                simpleFill.Style = esriSimpleFillStyle.esriSFSSolid;
+                classBreaksRenderer.set_Symbol(breakIndex, (ISymbol)simpleFill);
+                classBreaksRenderer.set_Break(breakIndex, classes[breakIndex + 1]);
+            }
+
+            geoFeatureLayer.Renderer = (IFeatureRenderer)classBreaksRenderer;
+            mapControl.Refresh();
+            mapControl.ActiveView.Refresh();
+             
+
+            tocControl.Update();
+        }
 
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            //GraduatedColors
-            if (!check()) return;
-            Graduatedcolors(cmbSelLyr.SelectedItem.ToString(),
-                cmbSelField.SelectedItem.ToString(),
-                Convert.ToInt32(cmbnumclasses.SelectedItem.ToString()));
-            cmbSelLyr.Items.Clear();
-            cmbSelField.Items.Clear();
-            cmbSelLyr.Text = "";
-            cmbSelField.Text = "";
-            cmbnumclasses.SelectedIndex = -1;
-            Close();
+            ClassifyColor();
+            Close();           
         }
 
         private void button2_Click_1(object sender, EventArgs e)

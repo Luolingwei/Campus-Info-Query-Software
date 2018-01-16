@@ -1035,14 +1035,15 @@ namespace Whu038
         private void 雷达图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> renderFields = new List<string>();
-            renderFields.Add("Sheet1$.平均海拔");
-            renderFields.Add("Sheet1$.平均坡度");
-            renderFields.Add("Sheet1$.与公路距离");
-            renderFields.Add("Sheet1$.坡向离散度");
-            renderFields.Add("地类图斑_新融合.Shape_Area"); 
+            renderFields.Add("人口密度");
+            renderFields.Add("居民地比例");
+            renderFields.Add("平均海拔");
+            renderFields.Add("平均坡度");
+            renderFields.Add("与公路距离");
+            renderFields.Add("坡向离散度");
 
             IColor BgColor = getRGB();//背景颜色使用默认颜色（我的是255，）
-            creatRadarChart("地类图斑_新融合", renderFields, BgColor, BgColor);
+            creatRadarChart("地类图斑A", renderFields, BgColor, BgColor);
         }
                 
         private void 柱状图ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1403,7 +1404,8 @@ namespace Whu038
                 feature = featureCursor.NextFeature();//循环遍历元素
             }//对地图元素（行政区）进行循环
             IActiveView activeView = axMapControl1.Map as IActiveView;
-            activeView.PartialRefresh(esriViewDrawPhase.esriViewGraphics, null, null);//axMapControl1.Extent
+            //activeView.PartialRefresh(esriViewDrawPhase.esriViewGraphics, null, null);//axMapControl1.Extent
+            activeView.Refresh();
         }
 
         #endregion
@@ -1863,6 +1865,7 @@ namespace Whu038
                 if (frmGraduatedcolors == null || frmGraduatedcolors.IsDisposed)
                 {
                     frmGraduatedcolors = new frmGraduatedcolors();
+                    frmGraduatedcolors.GetMap(axMapControl1, axTOCControl1);
 
                     frmGraduatedcolors.Graduatedcolors += new frmGraduatedcolors.GraduatedcolorsEventHandler(frmGraduatedcolors_Graduatedcolors);
 
@@ -1870,12 +1873,16 @@ namespace Whu038
                 frmGraduatedcolors.Map = axMapControl1.Map;
                 frmGraduatedcolors.InitUI();
                 frmGraduatedcolors.ShowDialog();
+
+                
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.ToString());
             }
         }
+
+        
 
         void frmGraduatedcolors_Graduatedcolors(string sFeatClsName, string sFieldName, int numclasses)
         {

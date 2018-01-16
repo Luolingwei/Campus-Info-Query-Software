@@ -271,28 +271,28 @@
             // 位置查询ToolStripMenuItem
             // 
             this.位置查询ToolStripMenuItem.Name = "位置查询ToolStripMenuItem";
-            this.位置查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.位置查询ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.位置查询ToolStripMenuItem.Text = "位置查询";
             this.位置查询ToolStripMenuItem.Click += new System.EventHandler(this.位置查询ToolStripMenuItem_Click);
             // 
             // 选择查询ToolStripMenuItem
             // 
             this.选择查询ToolStripMenuItem.Name = "选择查询ToolStripMenuItem";
-            this.选择查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.选择查询ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.选择查询ToolStripMenuItem.Text = "选择查询";
             this.选择查询ToolStripMenuItem.Click += new System.EventHandler(this.选择查询ToolStripMenuItem_Click);
             // 
             // 框选查询ToolStripMenuItem
             // 
             this.框选查询ToolStripMenuItem.Name = "框选查询ToolStripMenuItem";
-            this.框选查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.框选查询ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.框选查询ToolStripMenuItem.Text = "框选查询";
             this.框选查询ToolStripMenuItem.Click += new System.EventHandler(this.框选查询ToolStripMenuItem_Click);
             // 
             // 附近查询ToolStripMenuItem
             // 
             this.附近查询ToolStripMenuItem.Name = "附近查询ToolStripMenuItem";
-            this.附近查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.附近查询ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.附近查询ToolStripMenuItem.Text = "附近查询";
             this.附近查询ToolStripMenuItem.Click += new System.EventHandler(this.附近查询ToolStripMenuItem_Click);
             // 
@@ -325,7 +325,7 @@
             // 雷达图ToolStripMenuItem
             // 
             this.雷达图ToolStripMenuItem.Name = "雷达图ToolStripMenuItem";
-            this.雷达图ToolStripMenuItem.Size = new System.Drawing.Size(129, 26);
+            this.雷达图ToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.雷达图ToolStripMenuItem.Text = "雷达图";
             this.雷达图ToolStripMenuItem.Click += new System.EventHandler(this.雷达图ToolStripMenuItem_Click);
             // 
@@ -519,7 +519,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1167, 785);
+            this.tabPage2.Size = new System.Drawing.Size(1116, 785);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "布局";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -530,7 +530,7 @@
             this.axPageLayoutControl1.Location = new System.Drawing.Point(3, 3);
             this.axPageLayoutControl1.Name = "axPageLayoutControl1";
             this.axPageLayoutControl1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axPageLayoutControl1.OcxState")));
-            this.axPageLayoutControl1.Size = new System.Drawing.Size(1161, 779);
+            this.axPageLayoutControl1.Size = new System.Drawing.Size(1110, 779);
             this.axPageLayoutControl1.TabIndex = 8;
             this.axPageLayoutControl1.OnMouseDown += new ESRI.ArcGIS.Controls.IPageLayoutControlEvents_Ax_OnMouseDownEventHandler(this.axPageLayoutControl1_OnMouseDown);
             this.axPageLayoutControl1.OnMouseUp += new ESRI.ArcGIS.Controls.IPageLayoutControlEvents_Ax_OnMouseUpEventHandler(this.axPageLayoutControl1_OnMouseUp);
